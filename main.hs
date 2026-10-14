@@ -32,8 +32,14 @@ defaultPiece (_, _) = Nothing
 onBoard :: (Int, Int) -> Bool
 onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
 
+getPiece :: Board -> (Int, Int) -> Tile
+getPiece b (x, y) | not $ onBoard (x, y) = Nothing
+                  | otherwise = b !! (x + y * 8)
+
 main = do
     let indices = [(x,y) |  y <- [0..8], x <- [0..8]]
     let board = map defaultPiece indices
-    print $ onBoard (1, 2)
-    print $ onBoard (8, 0)
+    print $ getPiece board (0, 0)
+    print $ getPiece board (2, 1)
+    print $ getPiece board (5, 7)
+    print $ getPiece board (3, 2)
