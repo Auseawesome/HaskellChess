@@ -4,9 +4,9 @@ data PieceType = Pawn | Bishop | Knight | Rook | Queen | King
 data Player = White | Black
     deriving (Show, Eq)
 
-data Tile = Empty | Piece (PieceType) (Player)
+data Piece = Piece { color :: Player, piece_type  :: PieceType }
     deriving (Show, Eq)
 
 main = do
-    let test = Piece Pawn White
+    let test = Piece White Pawn
     print test
