@@ -9,6 +9,8 @@ data Piece = Piece { color :: Player, piece_type  :: PieceType }
 
 type Tile = Maybe Piece
 
+type Board = [Tile]
+
 backRankPiece :: Player -> Int -> Tile
 backRankPiece c 0 = Just $ Piece c Rook
 backRankPiece c 1 = Just $ Piece c Knight
@@ -27,7 +29,11 @@ defaultPiece (x, 7) = backRankPiece Black x
 defaultPiece (_, 6) = Just $ Piece Black Pawn
 defaultPiece (_, _) = Nothing
 
+onBoard :: (Int, Int) -> Bool
+onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
+
 main = do
     let indices = [(x,y) |  y <- [0..8], x <- [0..8]]
     let board = map defaultPiece indices
-    print board
+    print $ onBoard (1, 2)
+    print $ onBoard (8, 0)
