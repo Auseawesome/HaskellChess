@@ -7,6 +7,8 @@ data Player = White | Black
 data Piece = Piece { color :: Player, piece_type  :: PieceType }
     deriving (Show, Eq)
 
+type Tile = Maybe Piece
+
 main = do
     let test = Piece White Pawn
     print test
