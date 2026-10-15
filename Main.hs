@@ -1,3 +1,5 @@
+module Main(PieceType, Player, Piece, Tile, Board) where
+
 data PieceType = Pawn | Bishop | Knight | Rook | Queen | King
     deriving (Show, Eq)
 
