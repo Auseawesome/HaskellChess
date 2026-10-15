@@ -41,4 +41,4 @@ defaultPiece (_, 6) = Just $ Piece Black Pawn
 defaultPiece (_, _) = Nothing
 
 makeBoard :: Board
-makeBoard = map defaultPiece [(x,y) |  y <- [0..8], x <- [0..8]]
+makeBoard = map defaultPiece [(x,y) |  y <- [0..7], x <- [0..7]]
