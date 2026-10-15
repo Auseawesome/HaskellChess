@@ -20,3 +20,5 @@ typeCode Rook   = 'r'
 typeCode Queen  = 'Q'
 typeCode King   = 'K'
 
+pieceCode :: Piece -> String
+pieceCode (Piece c t) = [colorCode c, typeCode t]
