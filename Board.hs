@@ -9,9 +9,13 @@ onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
 index :: (Int, Int) -> Int
 index (x, y) = x + y * 8
 
+validIndex :: (Int, Int) -> Maybe Int
+validIndex p | not $ onBoard p = Nothing
+             | otherwise = Just $ index p
+
 getPiece :: Board -> (Int, Int) -> Tile
-getPiece b p | not $ onBoard p = Nothing
-             | otherwise = b !! index p
+getPiece b p = do p' <- validIndex p
+                  b !! p'
 
 backRankPiece :: Color -> Int -> Tile
 backRankPiece c 0 = Just $ Piece c Rook
