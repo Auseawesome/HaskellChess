@@ -12,10 +12,11 @@ colorCode :: Color -> Char
 colorCode White = 'w'
 colorCode Black = 'b'
 
-pieceCode :: PieceType -> Char
-pieceCode Pawn   = 'p'
-pieceCode Bishop = 'b'
-pieceCode Knight = 'k'
-pieceCode Rook   = 'r'
-pieceCode Queen  = 'Q'
-pieceCode King   = 'K'
+typeCode :: PieceType -> Char
+typeCode Pawn   = 'p'
+typeCode Bishop = 'b'
+typeCode Knight = 'k'
+typeCode Rook   = 'r'
+typeCode Queen  = 'Q'
+typeCode King   = 'K'
+
