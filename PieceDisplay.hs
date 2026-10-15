@@ -22,3 +22,7 @@ typeCode King   = 'K'
 
 pieceCode :: Piece -> String
 pieceCode (Piece c t) = [colorCode c, typeCode t]
+
+tileCode :: Tile -> String
+tileCode Nothing  = "  "
+tileCode (Just p) = pieceCode p
