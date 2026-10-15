@@ -1,4 +1,4 @@
-module Board(Board, onBoard, getPiece, makeBoard) where
+module Board(Board, onBoard, getPiece, setPiece, makeBoard) where
 import Piece
 
 type Board = [Tile]
@@ -16,6 +16,11 @@ validIndex p | not $ onBoard p = Nothing
 getPiece :: Board -> (Int, Int) -> Tile
 getPiece b p = do p' <- validIndex p
                   b !! p'
+
+setPiece :: Board -> (Int, Int) -> Tile -> Board
+setPiece b p t | not $ onBoard p = b
+               | otherwise = x ++ (t : ys)
+                 where (x,_:ys) = splitAt (index p) b
 
 backRankPiece :: Color -> Int -> Tile
 backRankPiece c 0 = Just $ Piece c Rook
