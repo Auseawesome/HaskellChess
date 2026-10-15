@@ -5,10 +5,14 @@ import Board
 
 main = do
     let board = makeBoard
-    print $ tileName $ getPiece board (0, 0)
+    let firstPawn = getPiece board (0, 0)
+    print $ tileName firstPawn
+    print $ tileCode firstPawn
     print $ tileName $ getPiece board (2, 1)
     print $ tileName $ getPiece board (5, 7)
-    print $ tileName $ getPiece board (3, 2)
+    let empty = getPiece board (3, 2)
+    print $ tileName empty
+    print $ tileCode empty
     print $ tileName $ getPiece board (-1, 0)
     let sameBoard = setPiece board (-1, -1) $ Just $ Piece Black Queen
     print $ sameBoard == board
