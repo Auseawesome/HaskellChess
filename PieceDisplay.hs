@@ -1,9 +1,12 @@
 module PieceDisplay(tileName) where
 import Piece
 
+pieceName :: Piece -> String
+pieceName (Piece c t) = show c ++ ' ' : show t
+
 tileName :: Tile -> String
-tileName Nothing            = "Empty"
-tileName (Just (Piece c t)) = show c ++ ' ' : show t
+tileName Nothing  = "Empty"
+tileName (Just p) = pieceName p
 
 colorCode :: Color -> Char
 colorCode White = 'w'
