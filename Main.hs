@@ -8,3 +8,4 @@ main = do
     print $ getPiece board (2, 1)
     print $ getPiece board (5, 7)
     print $ getPiece board (3, 2)
+    print $ getPiece board (-1, 0)
