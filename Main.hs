@@ -1,7 +1,6 @@
 module Main(main) where
 import Piece
-
-type Board = [Tile]
+import Board
 
 backRankPiece :: Color -> Int -> Tile
 backRankPiece c 0 = Just $ Piece c Rook
@@ -20,13 +19,6 @@ defaultPiece (_, 1) = Just $ Piece White Pawn
 defaultPiece (x, 7) = backRankPiece Black x
 defaultPiece (_, 6) = Just $ Piece Black Pawn
 defaultPiece (_, _) = Nothing
-
-onBoard :: (Int, Int) -> Bool
-onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
-
-getPiece :: Board -> (Int, Int) -> Tile
-getPiece b (x, y) | not $ onBoard (x, y) = Nothing
-                  | otherwise = b !! (x + y * 8)
 
 main = do
     let indices = [(x,y) |  y <- [0..8], x <- [0..8]]
