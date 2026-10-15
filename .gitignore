@@ -1,3 +1,7 @@
+# Ignore binary files by ignoring all then unigoring those with extensions
+*
+!*.*
+
 dist
 dist-*
 cabal-dev
