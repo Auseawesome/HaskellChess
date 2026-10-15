@@ -1,4 +1,4 @@
-module PieceDisplay(tileName) where
+module PieceDisplay(pieceName, tileName, colorCode, typeCode, pieceCode, tileCode) where
 import Piece
 
 pieceName :: Piece -> String
