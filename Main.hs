@@ -1,19 +1,9 @@
-module Main(PieceType, Player, Piece, Tile, Board) where
-
-data PieceType = Pawn | Bishop | Knight | Rook | Queen | King
-    deriving (Show, Eq)
-
-data Player = White | Black
-    deriving (Show, Eq)
-
-data Piece = Piece { color :: Player, piece_type  :: PieceType }
-    deriving (Show, Eq)
-
-type Tile = Maybe Piece
+module Main(main) where
+import Piece
 
 type Board = [Tile]
 
-backRankPiece :: Player -> Int -> Tile
+backRankPiece :: Color -> Int -> Tile
 backRankPiece c 0 = Just $ Piece c Rook
 backRankPiece c 1 = Just $ Piece c Knight
 backRankPiece c 2 = Just $ Piece c Bishop
