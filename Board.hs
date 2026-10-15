@@ -6,9 +6,12 @@ type Board = [Tile]
 onBoard :: (Int, Int) -> Bool
 onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
 
+index :: (Int, Int) -> Int
+index (x, y) = x + y * 8
+
 getPiece :: Board -> (Int, Int) -> Tile
-getPiece b (x, y) | not $ onBoard (x, y) = Nothing
-                  | otherwise = b !! (x + y * 8)
+getPiece b p | not $ onBoard p = Nothing
+             | otherwise = b !! index p
 
 backRankPiece :: Color -> Int -> Tile
 backRankPiece c 0 = Just $ Piece c Rook
