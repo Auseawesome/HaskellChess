@@ -2,9 +2,11 @@ module Main(main) where
 import Piece
 import PieceDisplay
 import Board
+import BoardDisplay
 
 main = do
     let board = makeBoard
+    putStrLn $ displayBoard board
     let firstPawn = getPiece board (0, 0)
     print $ tileName firstPawn
     print $ tileCode firstPawn
