@@ -2,27 +2,28 @@ module Board(Board, onBoard, getPiece, setPiece, movePiece, makeBoard) where
 import Piece
 
 type Board = [Tile]
+type Coord = (Int, Int)
 
-onBoard :: (Int, Int) -> Bool
+onBoard :: Coord -> Bool
 onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
 
-index :: (Int, Int) -> Int
+index :: Coord -> Int
 index (x, y) = x + y * 8
 
-validIndex :: (Int, Int) -> Maybe Int
+validIndex :: Coord -> Maybe Int
 validIndex p | not $ onBoard p = Nothing
              | otherwise = Just $ index p
 
-getPiece :: Board -> (Int, Int) -> Tile
+getPiece :: Board -> Coord -> Tile
 getPiece b p = do p' <- validIndex p
                   b !! p'
 
-setPiece :: Board -> (Int, Int) -> Tile -> Board
+setPiece :: Board -> Coord -> Tile -> Board
 setPiece b p t | not $ onBoard p = b
                | otherwise = x ++ (t : ys)
                  where (x,_:ys) = splitAt (index p) b
 
-movePiece :: Board -> (Int, Int) -> (Int, Int) -> Board
+movePiece :: Board -> Coord -> Coord -> Board
 movePiece b p1 p2 = setPiece (setPiece b p2 $ getPiece b p1) p1 Nothing
 
 backRankPiece :: Color -> Int -> Tile
@@ -36,7 +37,7 @@ backRankPiece c 6 = Just $ Piece c Knight
 backRankPiece c 7 = Just $ Piece c Rook
 backRankPiece _ _ = Nothing
 
-defaultPiece :: (Int,Int) -> Tile
+defaultPiece :: Coord -> Tile
 defaultPiece (x, 0) = backRankPiece White x
 defaultPiece (_, 1) = Just $ Piece White Pawn
 defaultPiece (x, 7) = backRankPiece Black x
