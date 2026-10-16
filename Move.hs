@@ -42,8 +42,14 @@ isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
                                 v = ((signum dx), (signum dy))
 
 isValidKnightMove :: Coord -> Coord -> Bool
-isValidKnightMove p1 p2 | vx == 0                  = False
-                        | vy == 0                  = False
-                        | (abs vx) + (abs vy) == 3 = True
+isValidKnightMove p1 p2 | dx == 0                  = False
+                        | dy == 0                  = False
+                        | (abs dx) + (abs dy) == 3 = True
                         | otherwise                = False
-                        where (vx, vy) = subVec p2 p1
+                        where (dx, dy) = subVec p2 p1
+
+isValidRookMove :: Board -> Coord -> Coord -> Bool
+isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (addVec p1 v) p2
+                        | otherwise          = False
+                        where (dx, dy) = subVec p2 p1
+                              v = ((signum dx), (signum dy))
