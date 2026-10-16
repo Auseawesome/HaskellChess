@@ -2,13 +2,16 @@ module Move() where
 import Piece
 import Board
 
+addVec :: Coord -> Coord -> Coord
+addVec (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
+
+subVec :: Coord -> Coord -> Coord
+subVec (x1, y1) (x2, y2) = (x1 - x2, y1 - y2)
+
 emptyRaycast :: Board -> Coord -> Coord -> Coord -> Bool
 emptyRaycast b v acc t | acc == t            = True
                        | not $ isEmpty b acc = False
-                       | otherwise           = emptyRaycast b v next t
-                       where (vx, vy) = v
-                             (accX, accY) = acc
-                             next = (accX + vx, accY + vy)
+                       | otherwise           = emptyRaycast b v (addVec acc v) t
 
 isValidPawnDouble :: Board -> Coord -> Coord -> Bool
 isValidPawnDouble b p1 p2 | y1 == y2          = False
