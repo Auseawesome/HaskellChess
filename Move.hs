@@ -31,3 +31,12 @@ isValidPawnMove b c p1 p2 | c == White && y2 <= y1 = False                     -
                           | otherwise              = isOpposing b c p2         -- If going diagonal, piece must be of opposing color
                           where (x1, y1) = p1
                                 (x2, y2) = p2
+
+isValidBishopMove :: Board -> Coord -> Coord -> Bool
+isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
+                          | otherwise            = emptyRaycast b v (addVec p1 v) p2
+                          where (x1, y1) = p1
+                                (x2, y2) = p2
+                                dx = x2 - x1
+                                dy = y2 - y1
+                                v = ((signum dx), (signum dy))
