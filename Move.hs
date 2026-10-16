@@ -2,6 +2,14 @@ module Move() where
 import Piece
 import Board
 
+emptyRaycast :: Board -> Coord -> Coord -> Coord -> Bool
+emptyRaycast b v acc t | acc == t            = True
+                       | not $ isEmpty b acc = False
+                       | otherwise           = emptyRaycast b v next t
+                       where (vx, vy) = v
+                             (accX, accY) = acc
+                             next = (accX + vx, accY + vy)
+
 isValidPawnDouble :: Board -> Coord -> Coord -> Bool
 isValidPawnDouble b p1 p2 | abs (y2 - y1) > 2 = False
                           | x1 /= x2          = False
