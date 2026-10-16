@@ -40,3 +40,10 @@ isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
                                 dx = x2 - x1
                                 dy = y2 - y1
                                 v = ((signum dx), (signum dy))
+
+isValidKnightMove :: Coord -> Coord -> Bool
+isValidKnightMove p1 p2 | vx == 0                  = False
+                        | vy == 0                  = False
+                        | (abs vx) + (abs vy) == 3 = True
+                        | otherwise                = False
+                        where (vx, vy) = subVec p2 p1
