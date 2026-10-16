@@ -27,4 +27,9 @@ displayLine :: [Tile] -> String
 displayLine ts = intercalate "|" $ map ((surround " ").tileCode) ts
 
 displayBoard :: Board -> String
-displayBoard b = concat $ map (++"\n") $ intersperse bufferLine $ intersperse dividingLine $ map displayLine (chunk 8 b)
+displayBoard b = concat $
+                 map (++"\n") $
+                 surround [bufferLine] $
+                 intersperse bufferLine $
+                 intersperse dividingLine $
+                 map displayLine (chunk 8 b)
