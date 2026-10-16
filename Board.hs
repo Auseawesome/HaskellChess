@@ -1,4 +1,4 @@
-module Board(Board, onBoard, getPiece, setPiece, movePiece, makeBoard) where
+module Board(Board, onBoard, getPiece, setPiece, movePiece, isEmpty, makeBoard) where
 import Piece
 
 type Board = [Tile]
@@ -25,6 +25,9 @@ setPiece b p t | not $ onBoard p = b
 
 movePiece :: Board -> Coord -> Coord -> Board
 movePiece b p1 p2 = setPiece (setPiece b p2 $ getPiece b p1) p1 Nothing
+
+isEmpty :: Board -> Coord -> Bool
+isEmpty b p = getPiece b p == Nothing
 
 backRankPiece :: Color -> Int -> Tile
 backRankPiece c 0 = Just $ Piece c Rook
