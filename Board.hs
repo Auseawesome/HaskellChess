@@ -1,4 +1,4 @@
-module Board(Board, onBoard, getPiece, setPiece, makeBoard) where
+module Board(Board, onBoard, getPiece, setPiece, movePiece, makeBoard) where
 import Piece
 
 type Board = [Tile]
@@ -21,6 +21,9 @@ setPiece :: Board -> (Int, Int) -> Tile -> Board
 setPiece b p t | not $ onBoard p = b
                | otherwise = x ++ (t : ys)
                  where (x,_:ys) = splitAt (index p) b
+
+movePiece :: Board -> (Int, Int) -> (Int, Int) -> Board
+movePiece b p1 p2 = setPiece (setPiece b p2 $ getPiece b p1) p1 Nothing
 
 backRankPiece :: Color -> Int -> Tile
 backRankPiece c 0 = Just $ Piece c Rook
