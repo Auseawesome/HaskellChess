@@ -1,4 +1,4 @@
-module Board(Board, onBoard, getPiece, setPiece, movePiece, isEmpty, isOpposing, makeBoard) where
+module Board(Board, Coord, onBoard, getPiece, setPiece, movePiece, isEmpty, isOpposing, makeBoard) where
 import Piece
 
 type Board = [Tile]
