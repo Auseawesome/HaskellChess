@@ -14,10 +14,11 @@ emptyRaycast b v acc t | acc == t            = True
                        | otherwise           = emptyRaycast b v (addVec acc v) t
 
 isValidPawnDouble :: Board -> Coord -> Coord -> Bool
-isValidPawnDouble b p1 p2 | y1 == y2          = False
-                          | abs (y2 - y1) > 2 = False
-                          | x1 /= x2          = False
-                          | otherwise         = isEmpty b p2
+isValidPawnDouble b p1 p2 | y1 == y2           = False
+                          | abs (y2 - y1) > 2  = False
+                          | x1 /= x2           = False
+                          | y1 /= 1 && y1 /= 6 = False
+                          | otherwise          = isEmpty b p2
                           where (x1, y1) = p1
                                 (x2, y2) = p2
 
