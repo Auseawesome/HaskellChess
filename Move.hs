@@ -1,4 +1,4 @@
-module Move() where
+module Move(isValidMove) where
 import Piece
 import Board
 
@@ -63,3 +63,20 @@ isValidKingMove b p1 p2 | (abs dx) > 1 = False
                         | (abs dy) > 1 = False
                         | otherwise    = True
                         where (dx, dy) = subVec p2 p1
+
+isValidMove :: Board -> Color -> Coord -> Coord -> Bool
+isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of the board
+                       | not (onBoard p2) = False -- Can't move out of the board
+                       | empty            = False -- Can't move an empty tile
+                       | c1 /= c2         = False -- Can't move a piece of opposing colour
+                       | isAlly b c1 p2   = False -- Can't take piece of your own colour
+                       | otherwise        = case pieceType of
+                             Pawn   -> isValidPawnMove b c1 p1 p2
+                             Bishop -> isValidBishopMove b p1 p2
+                             Knight -> isValidKnightMove p1 p2
+                             Rook   -> isValidRookMove b p1 p2
+                             Queen  -> isValidQueenMove b p1 p2
+                             King   -> isValidKingMove b p1 p2
+                       where piece                     = getPiece b p1
+                             empty                     = piece == Nothing
+                             Just (Piece c2 pieceType) = piece
