@@ -1,6 +1,7 @@
 module Board(
   Board(grid),
   Coord,
+  hasKingMoved, hasRookMoved, hasPawnDoubled,
   onBoard,
   getPiece, setPiece, movePiece,
   isEmpty, isAlly, isOpposing,
@@ -15,6 +16,22 @@ data Board = Board {
   pawnDoubled :: (Maybe Int, Maybe Int)
 }
 type Coord = (Int, Int)
+
+boardColorData :: (a, a) -> Color -> a
+boardColorData (d, _) White = d
+boardColorData (_, d) Black = d
+
+hasKingMoved :: Board -> Color -> Bool
+hasKingMoved b c = boardColorData (kingMoved b) c
+
+hasRookMoved :: Board -> Color -> Coord -> Bool
+hasRookMoved b c (x, _) | x == 0    = d1
+                        | x == 8    = d2
+                        | otherwise = True
+                        where (d1, d2) = boardColorData (rookMoved b) c
+
+hasPawnDoubled :: Board -> Color -> Coord -> Bool
+hasPawnDoubled b c (x, _) = boardColorData (pawnDoubled b) c == Just x
 
 onBoard :: Coord -> Bool
 onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
