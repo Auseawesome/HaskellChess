@@ -32,4 +32,4 @@ displayBoard b = concat $
                  surround [bufferLine] $
                  intersperse bufferLine $
                  intersperse dividingLine $
-                 map displayLine (chunk 8 b)
+                 map displayLine (chunk 8 (grid b))

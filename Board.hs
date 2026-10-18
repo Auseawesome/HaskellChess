@@ -1,7 +1,19 @@
-module Board(Board, Coord, onBoard, getPiece, setPiece, movePiece, isEmpty, isAlly, isOpposing, makeBoard) where
+module Board(
+  Board(grid),
+  Coord,
+  onBoard,
+  getPiece, setPiece, movePiece,
+  isEmpty, isAlly, isOpposing,
+  makeBoard
+) where
 import Piece
 
-type Board = [Tile]
+data Board = Board {
+  grid        :: [Tile],
+  kingMoved   :: (Bool, Bool),
+  rookMoved   :: ((Bool, Bool), (Bool, Bool)),
+  pawnDoubled :: (Maybe Int, Maybe Int)
+}
 type Coord = (Int, Int)
 
 onBoard :: Coord -> Bool
@@ -16,12 +28,12 @@ validIndex p | not $ onBoard p = Nothing
 
 getPiece :: Board -> Coord -> Tile
 getPiece b p = do p' <- validIndex p
-                  b !! p'
+                  (grid) b !! p'
 
 setPiece :: Board -> Coord -> Tile -> Board
 setPiece b p t | not $ onBoard p = b
-               | otherwise = x ++ (t : ys)
-                 where (x,_:ys) = splitAt (index p) b
+               | otherwise = Board (x ++ (t : ys)) (kingMoved b) (rookMoved b) (pawnDoubled b)
+               where (x,_:ys) = splitAt (index p) (grid b)
 
 movePiece :: Board -> Coord -> Coord -> Board
 movePiece b p1 p2 = setPiece (setPiece b p2 $ getPiece b p1) p1 Nothing
@@ -58,4 +70,5 @@ defaultPiece (_, 6) = Just $ Piece Black Pawn
 defaultPiece (_, _) = Nothing
 
 makeBoard :: Board
-makeBoard = map defaultPiece [(x,y) |  y <- [0..7], x <- [0..7]]
+makeBoard = Board grid (False, False) ((False, False), (False, False)) (Nothing, Nothing)
+            where grid     = map defaultPiece [(x,y) |  y <- [0..7], x <- [0..7]]
