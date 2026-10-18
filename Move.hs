@@ -56,3 +56,10 @@ isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (addVec p1 v) p2
 
 isValidQueenMove :: Board -> Coord -> Coord -> Bool
 isValidQueenMove b p1 p2 = isValidBishopMove b p1 p2 || isValidRookMove b p1 p2
+
+-- TODO: Stop king moving into check
+isValidKingMove :: Board -> Coord -> Coord -> Bool
+isValidKingMove b p1 p2 | (abs dx) > 1 = False
+                        | (abs dy) > 1 = False
+                        | otherwise    = True
+                        where (dx, dy) = subVec p2 p1
