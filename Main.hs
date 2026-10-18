@@ -3,6 +3,7 @@ import Piece
 import PieceDisplay
 import Board
 import BoardDisplay
+import Move
 
 main = do
     let board = makeBoard
