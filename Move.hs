@@ -53,3 +53,6 @@ isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (addVec p1 v) p2
                         | otherwise          = False
                         where (dx, dy) = subVec p2 p1
                               v = ((signum dx), (signum dy))
+
+isValidQueenMove :: Board -> Coord -> Coord -> Bool
+isValidQueenMove b p1 p2 = isValidBishopMove b p1 p2 || isValidRookMove b p1 p2
