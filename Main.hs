@@ -5,21 +5,25 @@ import Board
 import BoardDisplay
 import Move
 
-moveLoop :: Board -> IO()
-moveLoop b = do
-             putStrLn $ displayBoard b
+switchPlayer :: Color -> Color
+switchPlayer White = Black
+switchPlayer Black = White
 
-             x1 <- readLn
-             y1 <- readLn
+moveLoop :: Color -> Board -> IO()
+moveLoop c b  = do
+                putStrLn $ displayBoard b
 
-             x2 <- readLn
-             y2 <- readLn
+                x1 <- readLn
+                y1 <- readLn
 
-             moveLoop $ makeMove b White (x1, y1) (x2, y2)
+                x2 <- readLn
+                y2 <- readLn
+
+                moveLoop (switchPlayer c) $ makeMove b c (x1, y1) (x2, y2)
 
 
 main :: IO()
 main = do
     let board = makeBoard
-    moveLoop board
+    moveLoop White board
 
