@@ -5,13 +5,21 @@ import Board
 import BoardDisplay
 import Move
 
+moveLoop :: Board -> IO()
+moveLoop b = do
+             putStrLn $ displayBoard b
+
+             x1 <- readLn
+             y1 <- readLn
+
+             x2 <- readLn
+             y2 <- readLn
+
+             moveLoop $ makeMove b White (x1, y1) (x2, y2)
+
+
 main :: IO()
 main = do
     let board = makeBoard
-    putStrLn $ displayBoard board
-    
-    let newBoard = movePiece board (0, 0) (2, 3)
-    putStrLn $ displayBoard newBoard
-
-    print $ isOpposing newBoard White (2, 3)
+    moveLoop board
 
