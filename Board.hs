@@ -3,6 +3,7 @@ module Board(
   Coord,
   hasKingMoved, hasRookMoved, hasPawnDoubled,
   flagKingMoved, flagRookMoved,
+  flagPawnDoubled, clearPawnDoubled,
   onBoard,
   getPiece, setPiece, movePiece,
   isEmpty, isAlly, isOpposing,
@@ -50,6 +51,13 @@ flagRookMoved b c (x, _) | c == White = Board g k (wf', bf) p
                          where (Board g k (wf, bf) p) = b
                                wf'                    = getNewRookFlag wf x
                                bf'                    = getNewRookFlag bf x
+
+flagPawnDoubled :: Board -> Color -> Coord -> Board
+flagPawnDoubled (Board g k r _) White (x, _) = Board g k r (Just x, Nothing)
+flagPawnDoubled (Board g k r _) Black (x, _) = Board g k r (Nothing, Just x)
+
+clearPawnDoubled :: Board -> Board
+clearPawnDoubled (Board g k r _) =  Board g k r (Nothing, Nothing)
 
 onBoard :: Coord -> Bool
 onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
