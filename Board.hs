@@ -2,7 +2,7 @@ module Board(
   Board(grid),
   Coord,
   hasKingMoved, hasRookMoved, hasPawnDoubled,
-  flagKingMoved,
+  flagKingMoved, flagRookMoved,
   onBoard,
   getPiece, setPiece, movePiece,
   isEmpty, isAlly, isOpposing,
@@ -37,6 +37,19 @@ hasPawnDoubled b c (x, _) = boardColorData (pawnDoubled b) c == Just x
 flagKingMoved :: Board -> Color -> Board
 flagKingMoved (Board g (_, bm) r p) White = Board g (True, bm) r p
 flagKingMoved (Board g (wm, _) r p) Black = Board g (wm, True) r p
+
+getNewRookFlag :: (Bool, Bool) -> Int -> (Bool, Bool)
+getNewRookFlag (f1, f2) x | x == 0    = (True, f2)
+                          | x == 8    = (f1, True)
+                          | otherwise = (f1, f2)
+
+flagRookMoved :: Board -> Color -> Coord -> Board
+flagRookMoved b c (x, _) | c == White = Board g k (wf', bf) p
+                         | c == Black = Board g k (bf, wf') p
+                         | otherwise  = b
+                         where (Board g k (wf, bf) p) = b
+                               wf'                    = getNewRookFlag wf x
+                               bf'                    = getNewRookFlag bf x
 
 onBoard :: Coord -> Bool
 onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
