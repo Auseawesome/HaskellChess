@@ -28,6 +28,8 @@ displayLine ts = intercalate "|" $ map ((surround " ").tileCode) ts
 
 displayBoard :: Board -> String
 displayBoard b = concat $
+                 (:) (intercalate "|" [' ':(show x)++"  " | x <- [0..7]] ++ "\n") $
+                 (:) (dividingLine ++ "\n") $
                  map (++"\n") $
                  surround [bufferLine] $
                  intersperse bufferLine $
