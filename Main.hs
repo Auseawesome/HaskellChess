@@ -13,9 +13,6 @@ switchPlayer :: Color -> Color
 switchPlayer White = Black
 switchPlayer Black = White
 
-redoCoord :: String -> IO Coord
-redoCoord ord = putStrLn "That coordinate is invalid, please input another one!" >> inputCoord ord
-
 inputCoord :: String -> IO Coord
 inputCoord ord = do
               putStrLn ("Input the "++ord++" x-coordinate: ")
@@ -24,7 +21,9 @@ inputCoord ord = do
               putStrLn ("Input the "++ord++" y-coordinate: ")
               y <- readLn
 
-              if' (onBoard (x, y)) (return (x, y)) (redoCoord ord)
+              if' (onBoard (x, y))
+                  (return (x, y))
+                  (putStrLn "That coordinate is invalid, please input another one!" >> inputCoord ord)
 
 inputMove :: Color -> Board -> IO (Coord, Coord)
 inputMove c b = do
