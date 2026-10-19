@@ -18,23 +18,23 @@ redoCoord ord = putStrLn "That coordinate is invalid, please input another one!"
 
 inputCoord :: String -> IO Coord
 inputCoord ord = do
-                 putStrLn ("Input the "++ord++" x-coordinate: ")
-                 x <- readLn
+              putStrLn ("Input the "++ord++" x-coordinate: ")
+              x <- readLn
 
-                 putStrLn ("Input the "++ord++" y-coordinate: ")
-                 y <- readLn
+              putStrLn ("Input the "++ord++" y-coordinate: ")
+              y <- readLn
 
-                 if' (onBoard (x, y)) (return (x, y)) (redoCoord ord)
+              if' (onBoard (x, y)) (return (x, y)) (redoCoord ord)
 
 moveLoop :: Color -> Board -> IO()
-moveLoop c b  = do
-                putStrLn $ displayBoard b
+moveLoop c b = do
+            putStrLn $ displayBoard b
 
-                p1 <- inputCoord "1st"
+            p1 <- inputCoord "1st"
 
-                p2 <- inputCoord "2nd"
+            p2 <- inputCoord "2nd"
 
-                moveLoop (switchPlayer c) $ makeMove b c p1 p2
+            moveLoop (switchPlayer c) $ makeMove b c p1 p2
 
 
 main :: IO()
