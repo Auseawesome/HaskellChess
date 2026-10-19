@@ -5,6 +5,7 @@ import Board
 import BoardDisplay
 import Move
 
+main :: IO()
 main = do
     let board = makeBoard
     putStrLn $ displayBoard board
