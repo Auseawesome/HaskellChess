@@ -81,3 +81,29 @@ isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of 
                        where piece                     = getPiece b p1
                              empty                     = piece == Nothing
                              Just (Piece c2 pieceType) = piece
+
+updateKingFlags :: Board -> Color -> PieceType -> Board
+updateKingFlags b c King = flagKingMoved b c
+updateKingFlags b _ _    = b
+
+updateRookFlags :: Board -> Color -> PieceType -> Coord -> Board
+updateRookFlags b c Rook (x, _) = flagRookMoved b c x
+updateRookFlags b _ _    _      = b
+
+updatePawnFlags :: Board -> Color -> PieceType -> Coord -> Coord -> Board
+updatePawnFlags b c Pawn (x, y1) (_, y2) | y2-y1 < 2 = clearPawnDoubled b
+                                         | otherwise = flagPawnDoubled b c x 
+updatePawnFlags b _ _    _       _                   = clearPawnDoubled b
+
+updateAllFlags :: Board -> Color -> PieceType -> Coord -> Coord -> Board
+updateAllFlags b c t p1 p2 = b3
+                           where b1 = updateKingFlags b  c t
+                                 b2 = updateRookFlags b1 c t p1
+                                 b3 = updatePawnFlags b2 c t p1 p2
+
+-- TODO: Add en passant logic
+makeMove :: Board -> Color -> Coord -> Coord -> Board
+makeMove b c p1 p2 | not valid = b
+                   | otherwise = updateAllFlags (movePiece b p1 p2) c t p1 p2
+                   where valid            = isValidMove b c p1 p2
+                         Just (Piece _ t) = getPiece b p1
