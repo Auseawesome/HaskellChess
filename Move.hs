@@ -1,4 +1,4 @@
-module Move(isValidMove) where
+module Move(isValidMove, makeMove) where
 import Piece
 import Board
 
