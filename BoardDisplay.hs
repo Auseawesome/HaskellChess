@@ -18,20 +18,25 @@ chunk n xs = s : chunk n e
              where (s,e) = splitAt n xs
 
 dividingLine :: String
-dividingLine = replicate (8*4 + 7) '-'
+dividingLine = replicate (8*4 + 10) '-'
 
 bufferLine :: String
-bufferLine = intercalate "|" $ replicate 8 "    "
+bufferLine = "  |" ++ (intercalate "|" $ replicate 8 "    ")
 
 displayLine :: [Tile] -> String
 displayLine ts = intercalate "|" $ map ((surround " ").tileCode) ts
 
+numberRows :: Int -> [String] -> [String]
+numberRows _ []     = []
+numberRows i (x:xs) = ((show i)++" |"++x):(numberRows (i+1) xs)
+
 displayBoard :: Board -> String
 displayBoard b = concat $
-                 (:) (intercalate "|" [' ':(show x)++"  " | x <- [0..7]] ++ "\n") $
+                 (:) ("  |" ++ (intercalate "|" [' ':(show x)++"  " | x <- [0..7]]) ++ "\n") $
                  (:) (dividingLine ++ "\n") $
                  map (++"\n") $
                  surround [bufferLine] $
                  intersperse bufferLine $
                  intersperse dividingLine $
+                 numberRows 0 $
                  map displayLine (chunk 8 (grid b))
