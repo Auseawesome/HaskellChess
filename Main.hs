@@ -5,21 +5,36 @@ import Board
 import BoardDisplay
 import Move
 
+if' :: Bool -> a -> a -> a
+if' True  x _ = x
+if' False _ x = x
+
 switchPlayer :: Color -> Color
 switchPlayer White = Black
 switchPlayer Black = White
+
+redoCoord :: String -> IO Coord
+redoCoord ord = putStrLn "That coordinate is invalid, please input another one!" >> inputCoord ord
+
+inputCoord :: String -> IO Coord
+inputCoord ord = do
+                 putStrLn ("Input the "++ord++" x-coordinate: ")
+                 x <- readLn
+
+                 putStrLn ("Input the "++ord++" y-coordinate: ")
+                 y <- readLn
+
+                 if' (onBoard (x, y)) (return (x, y)) (redoCoord ord)
 
 moveLoop :: Color -> Board -> IO()
 moveLoop c b  = do
                 putStrLn $ displayBoard b
 
-                x1 <- readLn
-                y1 <- readLn
+                p1 <- inputCoord "1st"
 
-                x2 <- readLn
-                y2 <- readLn
+                p2 <- inputCoord "2nd"
 
-                moveLoop (switchPlayer c) $ makeMove b c (x1, y1) (x2, y2)
+                moveLoop (switchPlayer c) $ makeMove b c p1 p2
 
 
 main :: IO()
