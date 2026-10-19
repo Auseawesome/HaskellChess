@@ -26,13 +26,21 @@ inputCoord ord = do
 
               if' (onBoard (x, y)) (return (x, y)) (redoCoord ord)
 
+inputMove :: Color -> Board -> IO (Coord, Coord)
+inputMove c b = do
+             p1 <- inputCoord "1st"
+
+             p2 <- inputCoord "2nd"
+
+             if' (isValidMove b c p1 p2)
+                 (return (p1, p2))
+                 (putStrLn "That move is invalid, please try another one!" >> inputMove c b)
+
 moveLoop :: Color -> Board -> IO()
 moveLoop c b = do
             putStrLn $ displayBoard b
 
-            p1 <- inputCoord "1st"
-
-            p2 <- inputCoord "2nd"
+            (p1, p2) <- inputMove c b
 
             moveLoop (switchPlayer c) $ makeMove b c p1 p2
 
