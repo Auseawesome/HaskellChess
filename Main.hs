@@ -5,10 +5,6 @@ import PieceDisplay
 import Board
 import BoardDisplay
 import Move
-import Debug.Trace(trace)
-
-traceSelf :: Show a => a -> a
-traceSelf a = trace (show a) a
 
 inputCoord :: String -> IO Coord
 inputCoord ord = do
@@ -42,7 +38,7 @@ moveNoCheck c b = do
 
                let b' = makeMove b c p1 p2
 
-               if' (traceSelf (isInCheck b' c (traceSelf $ findKing b c)))
+               if' (isInCheck b' c $ findKing b c)
                    (putStrLn "That move would leave you in check!" >> moveNoCheck c b)
                    (return b')
 
