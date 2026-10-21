@@ -9,10 +9,6 @@ if' :: Bool -> a -> a -> a
 if' True  x _ = x
 if' False _ x = x
 
-switchPlayer :: Color -> Color
-switchPlayer White = Black
-switchPlayer Black = White
-
 inputCoord :: String -> IO Coord
 inputCoord ord = do
               putStrLn ("Input the "++ord++" x-coordinate: ")
@@ -41,7 +37,7 @@ moveLoop c b = do
 
             (p1, p2) <- inputMove c b
 
-            moveLoop (switchPlayer c) $ makeMove b c p1 p2
+            moveLoop (switchColor c) $ makeMove b c p1 p2
 
 
 main :: IO()

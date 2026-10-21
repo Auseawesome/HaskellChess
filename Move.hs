@@ -22,16 +22,25 @@ isValidPawnDouble b p1 p2 | y1 == y2           = False
                           where (x1, y1) = p1
                                 (x2, y2) = p2
 
--- En passant is not checked for here, that should be a special case in move code
+isValidEnPassant :: Board -> Color -> Coord -> Coord -> Bool
+isValidEnPassant b c p1 p2 | not (hasPawnDoubled b op p2) = False
+                           | not (isEmpty b p2)           = False
+                           | otherwise                    = isOpposing b c (x2, y1)
+                           where (_, y1) = p1
+                                 (x2, _) = p2
+                                 op      = switchColor c
+
 isValidPawnMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidPawnMove b c p1 p2 | c == White && y2 <= y1 = False                     -- White pawns can only move up in the y-direction
                           | c == Black && y2 >= y1 = False                     -- Black pawns can only move down in the y-direction
                           | abs (y2 - y1) /= 1     = isValidPawnDouble b p1 p2 -- Check double move if not moving 1 tile in y-direction
                           | x1 == x2               = isEmpty b p2              -- If moving directly forward, the tile must be empty
                           | abs(x1 - x2) /= 1      = False                     -- If not moving directly forward, only move 1 tile in x-direction
+                          | isEnPassant            = True                      -- Handle en-passant special case
                           | otherwise              = isOpposing b c p2         -- If going diagonal, piece must be of opposing color
-                          where (x1, y1) = p1
-                                (x2, y2) = p2
+                          where (x1, y1)    = p1
+                                (x2, y2)    = p2
+                                isEnPassant = isValidEnPassant b c p1 p2
 
 isValidBishopMove :: Board -> Coord -> Coord -> Bool
 isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
@@ -91,9 +100,9 @@ updateRookFlags b c Rook (x, _) = flagRookMoved b c x
 updateRookFlags b _ _    _      = b
 
 updatePawnFlags :: Board -> Color -> PieceType -> Coord -> Coord -> Board
-updatePawnFlags b c Pawn (x, y1) (_, y2) | y2-y1 < 2 = clearPawnDoubled b
-                                         | otherwise = flagPawnDoubled b c x 
-updatePawnFlags b _ _    _       _                   = clearPawnDoubled b
+updatePawnFlags b c Pawn (x, y1) (_, y2) | abs (y2-y1) < 2 = clearPawnDoubled b
+                                         | otherwise       = flagPawnDoubled b c x 
+updatePawnFlags b _ _    _       _                         = clearPawnDoubled b
 
 updateAllFlags :: Board -> Color -> PieceType -> Coord -> Coord -> Board
 updateAllFlags b c t p1 p2 = b3
@@ -101,9 +110,15 @@ updateAllFlags b c t p1 p2 = b3
                                  b2 = updateRookFlags b1 c t p1
                                  b3 = updatePawnFlags b2 c t p1 p2
 
--- TODO: Add en passant logic
+enPassant :: Board -> Coord -> Coord -> Board
+enPassant b p1 p2 = setPiece (setPiece (setPiece b (x2, y1) Nothing) p2 $ getPiece b p1) p1 Nothing
+                  where (_, y1) = p1
+                        (x2, _) = p2
+
 makeMove :: Board -> Color -> Coord -> Coord -> Board
-makeMove b c p1 p2 | not valid = b
-                   | otherwise = updateAllFlags (movePiece b p1 p2) c t p1 p2
+makeMove b c p1 p2 | not valid   = b
+                   | isEnPassant = updateAllFlags (enPassant b p1 p2) c t p1 p2
+                   | otherwise   = updateAllFlags (movePiece b p1 p2) c t p1 p2
                    where valid            = isValidMove b c p1 p2
                          Just (Piece _ t) = getPiece b p1
+                         isEnPassant      = (t == Pawn) && (isValidEnPassant b c p1 p2)
