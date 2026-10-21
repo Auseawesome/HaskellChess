@@ -30,6 +30,7 @@ inputMove c b = do
 
 moveLoop :: Color -> Board -> IO()
 moveLoop c b = do
+            putStrLn ("It is "++(show c)++"'s Turn\n")
             putStrLn $ displayBoard b
 
             (p1, p2) <- inputMove c b
