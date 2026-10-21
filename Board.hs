@@ -7,7 +7,8 @@ module Board(
   onBoard,
   getPiece, setPiece, movePiece,
   isEmpty, isAlly, isOpposing,
-  makeBoard
+  makeCoords, makeBoard,
+  findInBoard
 ) where
 import Piece
 
@@ -112,6 +113,20 @@ defaultPiece (x, 7) = backRankPiece Black x
 defaultPiece (_, 6) = Just $ Piece Black Pawn
 defaultPiece (_, _) = Nothing
 
+makeCoords :: [Coord]
+makeCoords = [(x,y) |  y <- [0..7], x <- [0..7]]
+
 makeBoard :: Board
 makeBoard = Board grid (False, False) ((False, False), (False, False)) (Nothing, Nothing)
-            where grid     = map defaultPiece [(x,y) |  y <- [0..7], x <- [0..7]]
+            where grid     = map defaultPiece makeCoords
+
+findInGrid :: (Tile -> Bool) -> Int -> [Tile] -> Maybe Int
+findInGrid _ _ []     = Nothing
+findInGrid f a (x:xs) | f x       = Just a
+                      | otherwise = findInGrid f (a+1) xs 
+
+findInBoard :: (Tile -> Bool) -> Board -> Maybe Coord
+findInBoard f b | i == Nothing = Nothing
+                | otherwise    = Just (mod i' 8, div i' 8)
+                where i       = findInGrid f 0 $ grid b
+                      Just i' = i

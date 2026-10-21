@@ -1,4 +1,4 @@
-module Move(isValidMove, makeMove) where
+module Move(isValidMove, makeMove, isInCheck) where
 import ChessUtils
 import Piece
 import Board
@@ -83,7 +83,6 @@ isValidCastle b c p1 p2 | dy /= 0                   = False
                               v        = (signum dx, 0)
                               empty    = emptyRaycast b v (addVec p1 v) rookPos
 
--- TODO: Stop king moving into check
 isValidKingMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidKingMove b c p1 p2 | validCastle  = True
                           | (abs dx) > 1 = False
@@ -141,6 +140,9 @@ castle b c p1 p2 = movePiece (movePiece fb p1 p2) (rookSide, y1) rookPos
                        rookSide = if' (dx < 0) 0 8
                        fb       = flagRookMoved b c rookSide
                        rookPos  = (x2 - (signum dx), y1)
+
+isInCheck :: Board -> Color -> Coord -> Bool
+isInCheck b c p2 = any (\p1 -> isValidMove b (switchColor c) p1 p2) makeCoords
 
 makeMove :: Board -> Color -> Coord -> Coord -> Board
 makeMove b c p1 p2 | not valid   = b

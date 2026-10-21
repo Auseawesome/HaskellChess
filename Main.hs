@@ -5,6 +5,10 @@ import PieceDisplay
 import Board
 import BoardDisplay
 import Move
+import Debug.Trace(trace)
+
+traceSelf :: Show a => a -> a
+traceSelf a = trace (show a) a
 
 inputCoord :: String -> IO Coord
 inputCoord ord = do
@@ -28,14 +32,28 @@ inputMove c b = do
                  (return (p1, p2))
                  (putStrLn "That move is invalid, please try another one!" >> inputMove c b)
 
+findKing :: Board -> Color -> Coord
+findKing b c = p
+             where Just p = findInBoard (== (Just (Piece c King))) b
+
+moveNoCheck :: Color -> Board -> IO Board
+moveNoCheck c b = do
+               (p1, p2) <- inputMove c b
+
+               let b' = makeMove b c p1 p2
+
+               if' (traceSelf (isInCheck b' c (traceSelf $ findKing b c)))
+                   (putStrLn "That move would leave you in check!" >> moveNoCheck c b)
+                   (return b')
+
 moveLoop :: Color -> Board -> IO()
 moveLoop c b = do
             putStrLn ("It is "++(show c)++"'s Turn\n")
             putStrLn $ displayBoard b
 
-            (p1, p2) <- inputMove c b
+            b' <- moveNoCheck c b
 
-            moveLoop (switchColor c) $ makeMove b c p1 p2
+            moveLoop (switchColor c) $ b'
 
 
 main :: IO()
