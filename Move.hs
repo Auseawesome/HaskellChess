@@ -1,4 +1,5 @@
 module Move(isValidMove, makeMove) where
+import ChessUtils
 import Piece
 import Board
 
@@ -67,12 +68,29 @@ isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (addVec p1 v) p2
 isValidQueenMove :: Board -> Coord -> Coord -> Bool
 isValidQueenMove b p1 p2 = isValidBishopMove b p1 p2 || isValidRookMove b p1 p2
 
--- TODO: Stop king moving into check
-isValidKingMove :: Board -> Coord -> Coord -> Bool
-isValidKingMove b p1 p2 | (abs dx) > 1 = False
-                        | (abs dy) > 1 = False
-                        | otherwise    = True
+-- TODO: Stop castling through check
+isValidCastle :: Board -> Color -> Coord -> Coord -> Bool
+isValidCastle b c p1 p2 | dy /= 0                   = False
+                        | (abs dx) /= 2             = False
+                        | hasKingMoved b c          = False
+                        | hasRookMoved b c rookSide = False
+                        | not empty                 = False
+                        | otherwise                 = Just (Piece c Rook) == (getPiece b rookPos)
                         where (dx, dy) = subVec p2 p1
+                              (0 , y ) = p1
+                              rookSide = if' (dx < 0) 0 8
+                              rookPos  = (rookSide, y)
+                              v        = (signum dx, 0)
+                              empty    = emptyRaycast b v (addVec p1 v) rookPos
+
+-- TODO: Stop king moving into check
+isValidKingMove :: Board -> Color -> Coord -> Coord -> Bool
+isValidKingMove b c p1 p2 | validCastle  = True
+                          | (abs dx) > 1 = False
+                          | (abs dy) > 1 = False
+                          | otherwise    = True
+                          where (dx, dy)    = subVec p2 p1
+                                validCastle = isValidCastle b c p1 p2
 
 isValidMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of the board
@@ -81,12 +99,12 @@ isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of 
                        | c1 /= c2         = False -- Can't move a piece of opposing colour
                        | isAlly b c1 p2   = False -- Can't take piece of your own colour
                        | otherwise        = case pieceType of
-                             Pawn   -> isValidPawnMove b c1 p1 p2
-                             Bishop -> isValidBishopMove b p1 p2
-                             Knight -> isValidKnightMove p1 p2
-                             Rook   -> isValidRookMove b p1 p2
-                             Queen  -> isValidQueenMove b p1 p2
-                             King   -> isValidKingMove b p1 p2
+                             Pawn   -> isValidPawnMove   b c1 p1 p2
+                             Bishop -> isValidBishopMove b    p1 p2
+                             Knight -> isValidKnightMove      p1 p2
+                             Rook   -> isValidRookMove   b    p1 p2
+                             Queen  -> isValidQueenMove  b    p1 p2
+                             King   -> isValidKingMove   b c1 p1 p2
                        where piece                     = getPiece b p1
                              empty                     = piece == Nothing
                              Just (Piece c2 pieceType) = piece
@@ -115,10 +133,21 @@ enPassant b p1 p2 = setPiece (setPiece (setPiece b (x2, y1) Nothing) p2 $ getPie
                   where (_, y1) = p1
                         (x2, _) = p2
 
+castle :: Board -> Color -> Coord -> Coord -> Board
+castle b c p1 p2 = movePiece (movePiece fb p1 p2) (rookSide, y1) rookPos
+                 where (dx, dy) = subVec p2 p1
+                       (_ , y1) = p1
+                       (x2, _ ) = p2
+                       rookSide = if' (dx < 0) 0 8
+                       fb       = flagRookMoved b c rookSide
+                       rookPos  = (x2 - (signum dx), y1)
+
 makeMove :: Board -> Color -> Coord -> Coord -> Board
 makeMove b c p1 p2 | not valid   = b
-                   | isEnPassant = updateAllFlags (enPassant b p1 p2) c t p1 p2
-                   | otherwise   = updateAllFlags (movePiece b p1 p2) c t p1 p2
+                   | isEnPassant = updateAllFlags (enPassant b   p1 p2) c t p1 p2
+                   | isCastle    = updateAllFlags (castle    b c p1 p2) c t p1 p2
+                   | otherwise   = updateAllFlags (movePiece b   p1 p2) c t p1 p2
                    where valid            = isValidMove b c p1 p2
                          Just (Piece _ t) = getPiece b p1
                          isEnPassant      = (t == Pawn) && (isValidEnPassant b c p1 p2)
+                         isCastle         = (t == King) && (isValidCastle    b c p1 p2)

@@ -1,13 +1,10 @@
 module Main(main) where
+import ChessUtils
 import Piece
 import PieceDisplay
 import Board
 import BoardDisplay
 import Move
-
-if' :: Bool -> a -> a -> a
-if' True  x _ = x
-if' False _ x = x
 
 inputCoord :: String -> IO Coord
 inputCoord ord = do
