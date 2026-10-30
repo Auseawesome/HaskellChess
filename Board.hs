@@ -155,7 +155,7 @@ isOpposing b c1 p | isEmpty b p = False
 
 findInBoard :: (Tile -> Bool) -> Board -> Maybe Coord
 findInBoard f b = do i <- findInGrid f 0 $ grid b
-                     Just $ indexToCoord i
+                     return $ indexToCoord i
 
 -------------------
 -- Piece Setters --
