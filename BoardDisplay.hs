@@ -31,12 +31,12 @@ numberRows _ []     = []
 numberRows i (x:xs) = ((show i)++" |"++x):(numberRows (i+1) xs)
 
 displayBoard :: Board -> String
-displayBoard b = concat $
-                 (:) ("  |" ++ (intercalate "|" [' ':(show x)++"  " | x <- [0..7]]) ++ "\n") $
-                 (:) (dividingLine ++ "\n") $
-                 map (++"\n") $
-                 surround [bufferLine] $
-                 intersperse bufferLine $
-                 intersperse dividingLine $
-                 numberRows 0 $
-                 map displayLine (chunk 8 (grid b))
+displayBoard b = concat d8
+               where d1 = map displayLine (chunk 8 (grid b))
+                     d2 = numberRows 0 d1
+                     d3 = intersperse dividingLine d2
+                     d4 = intersperse bufferLine d3
+                     d5 = surround [bufferLine] d4
+                     d6 = map (++"\n") d5
+                     d7 = (dividingLine ++ "\n") : d6
+                     d8 = ("  |" ++ (intercalate "|" [' ':(show x)++"  " | x <- [0..7]]) ++ "\n") : d7
