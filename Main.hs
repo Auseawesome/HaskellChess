@@ -55,7 +55,6 @@ moveLoop c b = do
 
             moveLoop (switchColor c) $ b'
 
-
 main :: IO()
 main = do
     let board = makeBoard
