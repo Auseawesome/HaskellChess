@@ -58,22 +58,29 @@ makeBoard = Board grid (False, False) ((False, False), (False, False)) (Nothing,
 -- Private Helpers --
 ---------------------
 
+-- Creates an index into the board grid from a coordinate pair
 index :: Coord -> Int
 index (x, y) = x + y * 8
 
+-- Checks whether a coordinate is on the board before generating an index
 validIndex :: Coord -> Maybe Int
 validIndex p | not $ onBoard p = Nothing
              | otherwise = Just $ index p
 
+-- Board state data is stored in pairs, get the state corresponding to the correct side
 boardColorData :: (a, a) -> Color -> a
 boardColorData (d, _) White = d
 boardColorData (_, d) Black = d
 
+-- Updates the flag for a rook moving based on the column it is moving from
+-- Assumes default starting board
 getNewRookFlag :: (Bool, Bool) -> Int -> (Bool, Bool)
 getNewRookFlag (f1, f2) x | x == 0    = (True, f2)
                           | x == 8    = (f1, True)
                           | otherwise = (f1, f2)
 
+-- Use a tile predicate to find the index of a tile in the board grid
+-- See 'findInBoard' for getting a coordinate
 findInGrid :: (Tile -> Bool) -> Int -> [Tile] -> Maybe Int
 findInGrid _ _ []     = Nothing
 findInGrid f a (x:xs) | f x       = Just a
