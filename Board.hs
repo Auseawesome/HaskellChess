@@ -69,6 +69,16 @@ boardColorData :: (a, a) -> Color -> a
 boardColorData (d, _) White = d
 boardColorData (_, d) Black = d
 
+getNewRookFlag :: (Bool, Bool) -> Int -> (Bool, Bool)
+getNewRookFlag (f1, f2) x | x == 0    = (True, f2)
+                          | x == 8    = (f1, True)
+                          | otherwise = (f1, f2)
+
+findInGrid :: (Tile -> Bool) -> Int -> [Tile] -> Maybe Int
+findInGrid _ _ []     = Nothing
+findInGrid f a (x:xs) | f x       = Just a
+                      | otherwise = findInGrid f (a+1) xs 
+
 -------------------
 -- State Getters --
 -------------------
@@ -92,11 +102,6 @@ hasPawnDoubled b c (x, _) = boardColorData (pawnDoubled b) c == Just x
 flagKingMoved :: Board -> Color -> Board
 flagKingMoved b White = b {kingMoved = (True, hasKingMoved b Black)}
 flagKingMoved b Black = b {kingMoved = (hasKingMoved b White, True)}
-
-getNewRookFlag :: (Bool, Bool) -> Int -> (Bool, Bool)
-getNewRookFlag (f1, f2) x | x == 0    = (True, f2)
-                          | x == 8    = (f1, True)
-                          | otherwise = (f1, f2)
 
 flagRookMoved :: Board -> Color -> Int -> Board
 flagRookMoved b c x | c == White = b {rookMoved = (wf', bf)}
@@ -136,11 +141,6 @@ isOpposing :: Board -> Color -> Coord -> Bool
 isOpposing b c1 p | isEmpty b p = False
                   | otherwise = c1 /= c2
                   where (Just (Piece c2 _)) = getPiece b p
-
-findInGrid :: (Tile -> Bool) -> Int -> [Tile] -> Maybe Int
-findInGrid _ _ []     = Nothing
-findInGrid f a (x:xs) | f x       = Just a
-                      | otherwise = findInGrid f (a+1) xs 
 
 findInBoard :: (Tile -> Bool) -> Board -> Maybe Coord
 findInBoard f b | i == Nothing = Nothing
