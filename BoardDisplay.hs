@@ -38,7 +38,7 @@ headerLine = h6
                  h3 = map (surround " ") h2 -- Pads the numbers with a space either side
                  h4 = map (++ " ")       h3 -- Adds an extra space to the end to fit even width
                  h5 = intercalate "|"    h4 -- Inserts dividing lines between the numbers
-                 h6 = "  |" ++ h5 ++ "\n"   -- Prepends a column for the row numbers and adds a new line
+                 h6 = "  |" ++           h5   -- Prepends a column for the row numbers
 
 -- Displays the board as a string
 displayBoard :: Board -> String
@@ -49,6 +49,6 @@ displayBoard b = concat d8
                      d3 = intersperse dividingLine d2 -- Adds dividing horizontal lines to each row
                      d4 = intersperse bufferLine   d3 -- Adds buffer lines between each row and divider
                      d5 = surround [bufferLine]    d4 -- Adds extra buffer lines to the outsides
-                     d6 = map (++"\n")             d5 -- Adds new lines to the end of every line
-                     d7 = (dividingLine ++ "\n") : d6 -- Adds a dividing line at the top
-                     d8 = headerLine :             d7 -- Adds the column headers above the dividing line
+                     d6 = dividingLine :           d5 -- Adds a dividing line at the top
+                     d7 = headerLine :             d6 -- Adds the column headers above the dividing line
+                     d8 = map (++"\n")             d7 -- Adds new lines to the end of every line
