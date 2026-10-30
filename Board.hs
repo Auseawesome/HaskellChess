@@ -138,7 +138,7 @@ onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
 
 getPiece :: Board -> Coord -> Tile
 getPiece b p = do p' <- validIndex p
-                  (grid) b !! p'
+                  grid b !! p'
 
 isEmpty :: Board -> Coord -> Bool
 isEmpty b p = getPiece b p == Nothing
