@@ -110,21 +110,21 @@ hasPawnDoubled b c (x, _) = boardColorData (pawnDoubled b) c == Just x
 -- State Setters --
 -------------------
 
-flagKingMoved :: Board -> Color -> Board
-flagKingMoved b White = b {kingMoved = (True, hasKingMoved b Black)}
-flagKingMoved b Black = b {kingMoved = (hasKingMoved b White, True)}
+flagKingMoved :: Color -> Board -> Board
+flagKingMoved White b = b {kingMoved = (True, hasKingMoved b Black)}
+flagKingMoved Black b = b {kingMoved = (hasKingMoved b White, True)}
 
-flagRookMoved :: Board -> Color -> Int -> Board
-flagRookMoved b c x | c == White = b {rookMoved = (wf', bf)}
+flagRookMoved :: Color -> Int -> Board -> Board
+flagRookMoved c x b | c == White = b {rookMoved = (wf', bf)}
                     | c == Black = b {rookMoved = (bf, wf')}
                     | otherwise  = b
                     where (wf, bf) = rookMoved b
                           wf'      = getNewRookFlag wf x
                           bf'      = getNewRookFlag bf x
 
-flagPawnDoubled :: Board -> Color -> Int -> Board
-flagPawnDoubled b White x = b {pawnDoubled = (Just x, Nothing)}
-flagPawnDoubled b Black x = b {pawnDoubled = (Nothing, Just x)}
+flagPawnDoubled :: Color -> Int -> Board -> Board
+flagPawnDoubled White x b = b {pawnDoubled = (Just x, Nothing)}
+flagPawnDoubled Black x b = b {pawnDoubled = (Nothing, Just x)}
 
 clearPawnDoubled :: Board -> Board
 clearPawnDoubled (Board g k r _) =  Board g k r (Nothing, Nothing)
@@ -161,11 +161,11 @@ findInBoard f b = do i <- findInGrid f 0 $ grid b
 -- Piece Setters --
 -------------------
 
-setPiece :: Board -> Coord -> Tile -> Board
-setPiece b p t | not $ onBoard p = b
+setPiece :: Coord -> Tile -> Board -> Board
+setPiece p t b | not $ onBoard p = b
                | otherwise       = b {grid = (x ++ (t : ys))}
                where (x,_:ys) = splitAt (index p) (grid b)
 
-movePiece :: Board -> Coord -> Coord -> Board
-movePiece b p1 p2 = setPiece (setPiece b p2 $ getPiece b p1) p1 Nothing
+movePiece :: Coord -> Coord -> Board -> Board
+movePiece p1 p2 b = setPiece p1 Nothing $ setPiece p2 (getPiece b p1) b
 

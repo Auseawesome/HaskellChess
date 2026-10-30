@@ -108,47 +108,50 @@ isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of 
                              empty                     = piece == Nothing
                              Just (Piece c2 pieceType) = piece
 
-updateKingFlags :: Board -> Color -> PieceType -> Board
-updateKingFlags b c King = flagKingMoved b c
-updateKingFlags b _ _    = b
+updateKingFlags :: Color -> PieceType -> Board -> Board
+updateKingFlags c King = flagKingMoved c
+updateKingFlags _ _    = id
 
-updateRookFlags :: Board -> Color -> PieceType -> Coord -> Board
-updateRookFlags b c Rook (x, _) = flagRookMoved b c x
-updateRookFlags b _ _    _      = b
+updateRookFlags :: Color -> PieceType -> Coord -> Board -> Board
+updateRookFlags c Rook (x, _) = flagRookMoved c x
+updateRookFlags _ _    _      = id
 
-updatePawnFlags :: Board -> Color -> PieceType -> Coord -> Coord -> Board
-updatePawnFlags b c Pawn (x, y1) (_, y2) | abs (y2-y1) < 2 = clearPawnDoubled b
-                                         | otherwise       = flagPawnDoubled b c x 
-updatePawnFlags b _ _    _       _                         = clearPawnDoubled b
+updatePawnFlags :: Color -> PieceType -> Coord -> Coord -> Board -> Board
+updatePawnFlags c Pawn (x, y1) (_, y2) | abs (y2-y1) < 2 = clearPawnDoubled
+                                       | otherwise       = flagPawnDoubled c x 
+updatePawnFlags _ _    _       _                         = clearPawnDoubled
 
-updateAllFlags :: Board -> Color -> PieceType -> Coord -> Coord -> Board
-updateAllFlags b c t p1 p2 = b3
-                           where b1 = updateKingFlags b  c t
-                                 b2 = updateRookFlags b1 c t p1
-                                 b3 = updatePawnFlags b2 c t p1 p2
+updateAllFlags :: Color -> PieceType -> Coord -> Coord -> Board -> Board
+updateAllFlags c t p1 p2 b = b3
+                           where b1 = updateKingFlags c t       b
+                                 b2 = updateRookFlags c t p1    b1
+                                 b3 = updatePawnFlags c t p1 p2 b2
 
-enPassant :: Board -> Coord -> Coord -> Board
-enPassant b p1 p2 = setPiece (setPiece (setPiece b (x2, y1) Nothing) p2 $ getPiece b p1) p1 Nothing
+enPassant :: Coord -> Coord -> Board -> Board
+enPassant p1 p2 b = setPiece p1       Nothing         $
+                    setPiece p2       (getPiece b p1) $
+                    setPiece (x2, y1) Nothing         b
                   where (_, y1) = p1
                         (x2, _) = p2
 
-castle :: Board -> Color -> Coord -> Coord -> Board
-castle b c p1 p2 = movePiece (movePiece fb p1 p2) (rookSide, y1) rookPos
+castle :: Color -> Coord -> Coord -> Board -> Board
+castle c p1 p2 b = movePiece (rookSide, y1) rookPos $
+                   movePiece p1             p2      $
+                   flagRookMoved c rookSide         b
                  where (dx, dy) = subVec p2 p1
                        (_ , y1) = p1
                        (x2, _ ) = p2
                        rookSide = if' (dx < 0) 0 8
-                       fb       = flagRookMoved b c rookSide
                        rookPos  = (x2 - (signum dx), y1)
 
 isInCheck :: Board -> Color -> Coord -> Bool
 isInCheck b c p2 = any (\p1 -> isValidMove b (switchColor c) p1 p2) makeCoords
 
-makeMove :: Board -> Color -> Coord -> Coord -> Board
-makeMove b c p1 p2 | not valid   = b
-                   | isEnPassant = updateAllFlags (enPassant b   p1 p2) c t p1 p2
-                   | isCastle    = updateAllFlags (castle    b c p1 p2) c t p1 p2
-                   | otherwise   = updateAllFlags (movePiece b   p1 p2) c t p1 p2
+makeMove :: Color -> Coord -> Coord -> Board -> Board
+makeMove c p1 p2 b | not valid   = b
+                   | isEnPassant = updateAllFlags c t p1 p2 $ enPassant p1 p2 b
+                   | isCastle    = updateAllFlags c t p1 p2 $ castle  c p1 p2 b
+                   | otherwise   = updateAllFlags c t p1 p2 $ movePiece p1 p2 b
                    where valid            = isValidMove b c p1 p2
                          Just (Piece _ t) = getPiece b p1
                          isEnPassant      = (t == Pawn) && (isValidEnPassant b c p1 p2)
