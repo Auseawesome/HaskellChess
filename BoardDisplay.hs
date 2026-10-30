@@ -42,7 +42,8 @@ headerLine = h6
 
 displayBoard :: Board -> String
 displayBoard b = concat d8
-               where d1 = map displayLine (chunk 8 (grid b))
+               where c  = chunk 8 $ grid b
+                     d1 = map displayLine          c
                      d2 = numberRows 0             d1
                      d3 = intersperse dividingLine d2
                      d4 = intersperse bufferLine   d3
