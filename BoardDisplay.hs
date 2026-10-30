@@ -30,14 +30,15 @@ numberRows :: Int -> [String] -> [String]
 numberRows _ []     = []
 numberRows i (x:xs) = ((show i)++" |"++x):(numberRows (i+1) xs)
 
+-- Generates the number headers for the board
 headerLine :: String
 headerLine = h6
-           where h1 = [0..7]
-                 h2 = map show           h1
-                 h3 = map (surround " ") h2
-                 h4 = map (++ " ")       h3
-                 h5 = intercalate "|"    h4
-                 h6 = "  |" ++ h5 ++ "\n"
+           where h1 = [0..7]                -- Generates header numbers for board, ranging from 0 to 7
+                 h2 = map show           h1 -- Turns header numbers into strings using show
+                 h3 = map (surround " ") h2 -- Pads the numbers with a space either side
+                 h4 = map (++ " ")       h3 -- Adds an extra space to the end to fit even width
+                 h5 = intercalate "|"    h4 -- Inserts dividing lines between the numbers
+                 h6 = "  |" ++ h5 ++ "\n"   -- Prepends a column for the row numbers and adds a new line
 
 displayBoard :: Board -> String
 displayBoard b = concat d8
