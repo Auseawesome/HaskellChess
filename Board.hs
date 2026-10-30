@@ -67,6 +67,10 @@ validIndex :: Coord -> Maybe Int
 validIndex p | not $ onBoard p = Nothing
              | otherwise = Just $ index p
 
+-- Gets a coordinate from an index, inverse of 'index'
+indexToCoord :: Int -> Coord
+indexToCoord i = (mod i 8, div i 8)
+
 -- Board state data is stored in pairs, get the state corresponding to the correct side
 boardColorData :: (a, a) -> Color -> a
 boardColorData (d, _) White = d
