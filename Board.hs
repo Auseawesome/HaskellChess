@@ -46,12 +46,12 @@ getNewRookFlag (f1, f2) x | x == 0    = (True, f2)
                           | otherwise = (f1, f2)
 
 flagRookMoved :: Board -> Color -> Int -> Board
-flagRookMoved b c x | c == White = Board g k (wf', bf) p
-                    | c == Black = Board g k (bf, wf') p
+flagRookMoved b c x | c == White = b {rookMoved = (wf', bf)}
+                    | c == Black = b {rookMoved = (bf, wf')}
                     | otherwise  = b
-                    where (Board g k (wf, bf) p) = b
-                          wf'                    = getNewRookFlag wf x
-                          bf'                    = getNewRookFlag bf x
+                    where (wf, bf) = rookMoved b
+                          wf'      = getNewRookFlag wf x
+                          bf'      = getNewRookFlag bf x
 
 flagPawnDoubled :: Board -> Color -> Int -> Board
 flagPawnDoubled (Board g k r _) White x = Board g k r (Just x, Nothing)
