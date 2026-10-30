@@ -30,6 +30,9 @@ numberRows :: Int -> [String] -> [String]
 numberRows _ []     = []
 numberRows i (x:xs) = ((show i)++" |"++x):(numberRows (i+1) xs)
 
+headerLine :: String
+headerLine = "  |" ++ (intercalate "|" [' ':(show x)++"  " | x <- [0..7]]) ++ "\n"
+
 displayBoard :: Board -> String
 displayBoard b = concat d8
                where d1 = map displayLine (chunk 8 (grid b))
@@ -39,4 +42,4 @@ displayBoard b = concat d8
                      d5 = surround [bufferLine] d4
                      d6 = map (++"\n") d5
                      d7 = (dividingLine ++ "\n") : d6
-                     d8 = ("  |" ++ (intercalate "|" [' ':(show x)++"  " | x <- [0..7]]) ++ "\n") : d7
+                     d8 = headerLine : d7
