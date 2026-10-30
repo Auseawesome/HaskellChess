@@ -54,8 +54,8 @@ flagRookMoved b c x | c == White = b {rookMoved = (wf', bf)}
                           bf'      = getNewRookFlag bf x
 
 flagPawnDoubled :: Board -> Color -> Int -> Board
-flagPawnDoubled (Board g k r _) White x = Board g k r (Just x, Nothing)
-flagPawnDoubled (Board g k r _) Black x = Board g k r (Nothing, Just x)
+flagPawnDoubled b White x = b {pawnDoubled = (Just x, Nothing)}
+flagPawnDoubled b Black x = b {pawnDoubled = (Nothing, Just x)}
 
 clearPawnDoubled :: Board -> Board
 clearPawnDoubled (Board g k r _) =  Board g k r (Nothing, Nothing)
