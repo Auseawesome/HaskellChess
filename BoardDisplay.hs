@@ -24,7 +24,7 @@ bufferLine :: String
 bufferLine = "  |" ++ (intercalate "|" $ replicate 8 "    ")
 
 displayLine :: [Tile] -> String
-displayLine ts = intercalate "|" $ map ((surround " ").tileCode) ts
+displayLine = intercalate "|" . map ((surround " ") . tileCode)
 
 numberRows :: Int -> [String] -> [String]
 numberRows _ []     = []
