@@ -154,10 +154,8 @@ isOpposing b c1 p | isEmpty b p = False
                   where (Just (Piece c2 _)) = getPiece b p
 
 findInBoard :: (Tile -> Bool) -> Board -> Maybe Coord
-findInBoard f b | i == Nothing = Nothing
-                | otherwise    = Just (mod i' 8, div i' 8)
-                where i       = findInGrid f 0 $ grid b
-                      Just i' = i
+findInBoard f b = do i <- findInGrid f 0 $ grid b
+                     Just $ indexToCoord i
 
 -------------------
 -- Piece Setters --
