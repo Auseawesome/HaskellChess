@@ -31,7 +31,12 @@ numberRows _ []     = []
 numberRows i (x:xs) = ((show i)++" |"++x):(numberRows (i+1) xs)
 
 headerLine :: String
-headerLine = "  |" ++ (intercalate "|" [' ':(show x)++"  " | x <- [0..7]]) ++ "\n"
+headerLine = "  |" ++ h5 ++ "\n"
+           where h1 = [0..7]
+                 h2 = map show h1
+                 h3 = map (surround " ") h2
+                 h4 = map (++ " ") h3
+                 h5 = intercalate "|" h4
 
 displayBoard :: Board -> String
 displayBoard b = concat d8
