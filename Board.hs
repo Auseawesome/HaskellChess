@@ -76,7 +76,7 @@ getPiece b p = do p' <- validIndex p
 
 setPiece :: Board -> Coord -> Tile -> Board
 setPiece b p t | not $ onBoard p = b
-               | otherwise = b {grid = (x ++ (t : ys))}
+               | otherwise       = b {grid = (x ++ (t : ys))}
                where (x,_:ys) = splitAt (index p) (grid b)
 
 movePiece :: Board -> Coord -> Coord -> Board
