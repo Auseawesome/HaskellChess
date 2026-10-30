@@ -37,8 +37,8 @@ hasPawnDoubled :: Board -> Color -> Coord -> Bool
 hasPawnDoubled b c (x, _) = boardColorData (pawnDoubled b) c == Just x
 
 flagKingMoved :: Board -> Color -> Board
-flagKingMoved (Board g (_, bm) r p) White = Board g (True, bm) r p
-flagKingMoved (Board g (wm, _) r p) Black = Board g (wm, True) r p
+flagKingMoved b White = b {kingMoved = (True, hasKingMoved b Black)}
+flagKingMoved b Black = b {kingMoved = (hasKingMoved b White, True)}
 
 getNewRookFlag :: (Bool, Bool) -> Int -> (Bool, Bool)
 getNewRookFlag (f1, f2) x | x == 0    = (True, f2)
