@@ -32,19 +32,23 @@ findKing :: Board -> Color -> Coord
 findKing b c = p
              where Just p = findInBoard (== (Just (Piece c King))) b
 
+isPlayerInCheck :: Color -> Board -> Bool
+isPlayerInCheck c b = isInCheck b c $ findKing b c
+
 moveNoCheck :: Color -> Board -> IO Board
 moveNoCheck c b = do
                (p1, p2) <- inputMove c b
 
                let b' = makeMove b c p1 p2
 
-               if' (isInCheck b' c $ findKing b c)
+               if' (isPlayerInCheck c b')
                    (putStrLn "That move would leave you in check!" >> moveNoCheck c b)
                    (return b')
 
 moveLoop :: Color -> Board -> IO()
 moveLoop c b = do
             putStrLn ("It is "++(show c)++"'s Turn\n")
+            if' (isPlayerInCheck c b) (putStrLn "You are in check!") (return ())
             putStrLn $ displayBoard b
 
             b' <- moveNoCheck c b
