@@ -28,9 +28,10 @@ inputMove c b = do
                  (return (p1, p2))
                  (putStrLn "That move is invalid, please try another one!" >> inputMove c b)
 
+-- Finds the king of a given colour player within a board
 findKing :: Board -> Color -> Coord
 findKing b c = p
-             where Just p = findInBoard (== (Just (Piece c King))) b
+             where Just p = findInBoard (== (Just (Piece c King))) b -- Assumes king must be present, should always be safe
 
 isPlayerInCheck :: Color -> Board -> Bool
 isPlayerInCheck c b = isInCheck b c $ findKing b c
