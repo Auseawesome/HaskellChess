@@ -31,7 +31,7 @@ inputMove c b = do
 -- Finds the king of a given colour player within a board
 findKing :: Board -> Color -> Coord
 findKing b c = p
-             where Just p = findInBoard (== (Just (Piece c King))) b -- Assumes king must be present, should always be safe
+             where Just p = findInBoard (== Just (Piece c King)) b -- Assumes king must be present, should always be safe
 
 isPlayerInCheck :: Color -> Board -> Bool
 isPlayerInCheck c b = isInCheck b c $ findKing b c
