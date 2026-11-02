@@ -12,8 +12,8 @@ type OrError = Either String
 chessToCoord :: String -> OrError Coord
 chessToCoord ""       = Left  "An empty string is not a valid coordinate."
 chessToCoord (c:"")   = Left  (c:" is not a valid coordinate.")
-chessToCoord (x:y:"") = do x' <- charToRow x
-                           y' <- charToRow y
+chessToCoord (x:y:"") = do x' <- charToFile x
+                           y' <- charToRank y
 
                            let p = (x', y')
 
@@ -22,25 +22,29 @@ chessToCoord (x:y:"") = do x' <- charToRow x
                                (Left "That position is not on the board!")
 chessToCoord s        = Left  $ (shows s) " is not a valid coordinate."
 
--- Converts a character to a row or column number, returning a string error if it isn't valid
-charToRow :: Char -> OrError Int
-charToRow 'a' = Right 0
-charToRow 'b' = Right 1
-charToRow 'c' = Right 2
-charToRow 'd' = Right 3
-charToRow 'e' = Right 4
-charToRow 'f' = Right 5
-charToRow 'g' = Right 6
-charToRow 'h' = Right 7
-charToRow '0' = Right 0
-charToRow '1' = Right 1
-charToRow '2' = Right 2
-charToRow '3' = Right 3
-charToRow '4' = Right 4
-charToRow '5' = Right 5
-charToRow '6' = Right 6
-charToRow '7' = Right 7
-charToRow  c  = Left (c:" is not a valid row/column.")
+-- Converts a character to a file number, returning a string error if it isn't valid
+charToFile :: Char -> OrError Int
+charToFile 'a' = Right 0
+charToFile 'b' = Right 1
+charToFile 'c' = Right 2
+charToFile 'd' = Right 3
+charToFile 'e' = Right 4
+charToFile 'f' = Right 5
+charToFile 'g' = Right 6
+charToFile 'h' = Right 7
+charToFile  c  = Left (c:" is not a valid file.")
+
+-- Converts a character to a rank number, returning a string error if it isn't valid
+charToRank :: Char -> OrError Int
+charToRank '0' = Right 0
+charToRank '1' = Right 1
+charToRank '2' = Right 2
+charToRank '3' = Right 3
+charToRank '4' = Right 4
+charToRank '5' = Right 5
+charToRank '6' = Right 6
+charToRank '7' = Right 7
+charToRank  c  = Left (c:" is not a valid rank.")
 
 inputCoord :: String -> IO Coord
 inputCoord ord = do
