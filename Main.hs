@@ -5,8 +5,7 @@ import PieceDisplay
 import Board
 import BoardDisplay
 import Move
-
-type OrError = Either String
+import Error
 
 -- Converts a chess-tile string to a coordinate, returning a string error if it isn't valid
 chessToCoord :: String -> OrError Coord
@@ -45,11 +44,6 @@ charToRank '5' = Right 5
 charToRank '6' = Right 6
 charToRank '7' = Right 7
 charToRank  c  = Left (c:" is not a valid rank.")
-
--- On error, takes action to retry and retries after printing the error
-returnOrRetry :: IO a -> OrError a -> IO a
-returnOrRetry _ (Right x) = return x
-returnOrRetry m (Left  e) = putStrLn e >> m
 
 inputCoord :: String -> IO Coord
 inputCoord ord = do
