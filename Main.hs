@@ -46,15 +46,18 @@ charToRank '6' = Right 6
 charToRank '7' = Right 7
 charToRank  c  = Left (c:" is not a valid rank.")
 
+-- On error, takes action to retry and retries after printing the error
+returnOrRetry :: IO a -> OrError a -> IO a
+returnOrRetry _ (Right x) = return x
+returnOrRetry m (Left  e) = putStrLn e >> m
+
 inputCoord :: String -> IO Coord
 inputCoord ord = do
               putStrLn ("Input the "++ord++" x-coordinate (eg. a1): ")
               p <- getLine
               let p' = chessToCoord p
 
-              case p' of
-                   Left  e -> putStrLn e >> inputCoord ord 
-                   Right c -> return c
+              returnOrRetry (inputCoord ord) p'
 
 inputMove :: Color -> Board -> IO (Coord, Coord)
 inputMove c b = do
