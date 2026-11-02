@@ -8,6 +8,7 @@ import Move
 
 type OrError = Either String
 
+-- Converts a chess-tile string to a coordinate, returning a string error if it isn't valid
 chessToCoord :: String -> OrError Coord
 chessToCoord ""       = Left  "An empty string is not a valid coordinate."
 chessToCoord (c:"")   = Left  (c:" is not a valid coordinate.")
@@ -21,6 +22,7 @@ chessToCoord (x:y:"") = do x' <- charToRow x
                                (Left "That position is not on the board!")
 chessToCoord s        = Left  $ (shows s) " is not a valid coordinate."
 
+-- Converts a character to a row or column number, returning a string error if it isn't valid
 charToRow :: Char -> OrError Int
 charToRow 'a' = Right 0
 charToRow 'b' = Right 1
