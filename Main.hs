@@ -23,27 +23,27 @@ chessToCoord s        = Left  $ (shows s) " is not a valid coordinate."
 
 -- Converts a character to a file number, returning a string error if it isn't valid
 charToFile :: Char -> OrError Int
-charToFile 'a' = Right 0
-charToFile 'b' = Right 1
-charToFile 'c' = Right 2
-charToFile 'd' = Right 3
-charToFile 'e' = Right 4
-charToFile 'f' = Right 5
-charToFile 'g' = Right 6
-charToFile 'h' = Right 7
-charToFile  c  = Left (c:" is not a valid file.")
+charToFile 'a' = noErr 0
+charToFile 'b' = noErr 1
+charToFile 'c' = noErr 2
+charToFile 'd' = noErr 3
+charToFile 'e' = noErr 4
+charToFile 'f' = noErr 5
+charToFile 'g' = noErr 6
+charToFile 'h' = noErr 7
+charToFile  c  = errLn (c:" is not a valid file.")
 
 -- Converts a character to a rank number, returning a string error if it isn't valid
 charToRank :: Char -> OrError Int
-charToRank '0' = Right 0
-charToRank '1' = Right 1
-charToRank '2' = Right 2
-charToRank '3' = Right 3
-charToRank '4' = Right 4
-charToRank '5' = Right 5
-charToRank '6' = Right 6
-charToRank '7' = Right 7
-charToRank  c  = Left (c:" is not a valid rank.")
+charToRank '0' = noErr 0
+charToRank '1' = noErr 1
+charToRank '2' = noErr 2
+charToRank '3' = noErr 3
+charToRank '4' = noErr 4
+charToRank '5' = noErr 5
+charToRank '6' = noErr 6
+charToRank '7' = noErr 7
+charToRank  c  = errLn (c:" is not a valid rank.")
 
 inputCoord :: String -> IO Coord
 inputCoord ord = do
