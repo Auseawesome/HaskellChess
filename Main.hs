@@ -6,17 +6,49 @@ import Board
 import BoardDisplay
 import Move
 
+type OrError = Either String
+
+chessToCoord :: String -> OrError Coord
+chessToCoord ""       = Left  "An empty string is not a valid coordinate."
+chessToCoord (c:"")   = Left  (c:" is not a valid coordinate.")
+chessToCoord (x:y:"") = do x' <- charToRow x
+                           y' <- charToRow y
+
+                           let p = (x', y')
+
+                           if' (onBoard p)
+                               (return p)
+                               (Left "That position is not on the board!")
+chessToCoord s        = Left  $ (shows s) " is not a valid coordinate."
+
+charToRow :: Char -> OrError Int
+charToRow 'a' = Right 0
+charToRow 'b' = Right 1
+charToRow 'c' = Right 2
+charToRow 'd' = Right 3
+charToRow 'e' = Right 4
+charToRow 'f' = Right 5
+charToRow 'g' = Right 6
+charToRow 'h' = Right 7
+charToRow '0' = Right 0
+charToRow '1' = Right 1
+charToRow '2' = Right 2
+charToRow '3' = Right 3
+charToRow '4' = Right 4
+charToRow '5' = Right 5
+charToRow '6' = Right 6
+charToRow '7' = Right 7
+charToRow  c  = Left (c:" is not a valid row/column.")
+
 inputCoord :: String -> IO Coord
 inputCoord ord = do
               putStrLn ("Input the "++ord++" x-coordinate: ")
-              x <- readLn
+              p <- getLine
+              let p' = chessToCoord p
 
-              putStrLn ("Input the "++ord++" y-coordinate: ")
-              y <- readLn
-
-              if' (onBoard (x, y))
-                  (return (x, y))
-                  (putStrLn "That coordinate is invalid, please input another one!" >> inputCoord ord)
+              case p' of
+                   Left  e -> putStrLn e >> inputCoord ord 
+                   Right c -> return c
 
 inputMove :: Color -> Board -> IO (Coord, Coord)
 inputMove c b = do

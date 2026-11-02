@@ -32,13 +32,12 @@ numberRows i (x:xs) = ((show i)++" |"++x):(numberRows (i+1) xs)
 
 -- Generates the number headers for the board
 headerLine :: String
-headerLine = h6
-           where h1 = [0..7]                -- Generates header numbers for board, ranging from 0 to 7
-                 h2 = map show           h1 -- Turns header numbers into strings using show
-                 h3 = map (surround " ") h2 -- Pads the numbers with a space either side
-                 h4 = map (++ " ")       h3 -- Adds an extra space to the end to fit even width
-                 h5 = intercalate "|"    h4 -- Inserts dividing lines between the numbers
-                 h6 = "  |" ++           h5   -- Prepends a column for the row numbers
+headerLine = h5
+           where h1 = ['a'..'h']         -- Generates header letters for board, ranging from a to h
+                 h2 = map (: "  ")    h1 -- Pads the letters with two spaces afterwards
+                 h3 = map (' ' :)     h2 -- Adds an extra space to the start to fit even width
+                 h4 = intercalate "|" h3 -- Inserts dividing lines between the letters
+                 h5 = "  |" ++        h4 -- Prepends a column for the row numbers
 
 -- Displays the board as a string
 displayBoard :: Board -> String
