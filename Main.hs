@@ -44,7 +44,7 @@ charToRow  c  = Left (c:" is not a valid row/column.")
 
 inputCoord :: String -> IO Coord
 inputCoord ord = do
-              putStrLn ("Input the "++ord++" x-coordinate: ")
+              putStrLn ("Input the "++ord++" x-coordinate (eg. a1): ")
               p <- getLine
               let p' = chessToCoord p
 
