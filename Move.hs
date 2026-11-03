@@ -77,7 +77,7 @@ isValidCastle b c p1 p2 | dy /= 0                   = False
                         | not empty                 = False
                         | otherwise                 = Just (Piece c Rook) == (getPiece b rookPos)
                         where (dx, dy) = subVec p2 p1
-                              (0 , y ) = p1
+                              (_ , y ) = p1
                               rookSide = if' (dx < 0) 0 8
                               rookPos  = (rookSide, y)
                               v        = (signum dx, 0)
