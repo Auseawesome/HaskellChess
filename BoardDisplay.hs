@@ -44,7 +44,7 @@ displayBoard :: Board -> String
 displayBoard b = concat d8
                where c  = chunk 8 $ grid b            -- Chunks the board into a list of rows
                      d1 = map displayLine          c  -- Applies displayLine to each row to add padding and dividing vertical lines
-                     d2 = numberRows 0             d1 -- Adds the row numbers
+                     d2 = numberRows 1             d1 -- Adds the row numbers
                      d3 = intersperse dividingLine d2 -- Adds dividing horizontal lines to each row
                      d4 = intersperse bufferLine   d3 -- Adds buffer lines between each row and divider
                      d5 = surround [bufferLine]    d4 -- Adds extra buffer lines to the outsides

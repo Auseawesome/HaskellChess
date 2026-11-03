@@ -35,14 +35,14 @@ charToFile  c  = errLn (c:" is not a valid file.")
 
 -- Converts a character to a rank number, returning a string error if it isn't valid
 charToRank :: Char -> OrError Int
-charToRank '0' = noErr 0
-charToRank '1' = noErr 1
-charToRank '2' = noErr 2
-charToRank '3' = noErr 3
-charToRank '4' = noErr 4
-charToRank '5' = noErr 5
-charToRank '6' = noErr 6
-charToRank '7' = noErr 7
+charToRank '1' = noErr 0
+charToRank '2' = noErr 1
+charToRank '3' = noErr 2
+charToRank '4' = noErr 3
+charToRank '5' = noErr 4
+charToRank '6' = noErr 5
+charToRank '7' = noErr 6
+charToRank '8' = noErr 7
 charToRank  c  = errLn (c:" is not a valid rank.")
 
 inputCoord :: String -> IO Coord
