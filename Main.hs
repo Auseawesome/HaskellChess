@@ -46,18 +46,18 @@ charToRank '7' = noErr 7
 charToRank  c  = errLn (c:" is not a valid rank.")
 
 inputCoord :: String -> IO Coord
-inputCoord ord = do
-              putStrLn ("Input the "++ord++" x-coordinate (eg. a1): ")
+inputCoord msg = do
+              putStrLn ("Input the "++msg++" (eg. a1): ")
               p <- getLine
               let p' = chessToCoord p
 
-              returnOrRetry (inputCoord ord) p'
+              returnOrRetry (inputCoord msg) p'
 
 inputMove :: Color -> Board -> IO (Coord, Coord)
 inputMove c b = do
-             p1 <- inputCoord "1st"
+             p1 <- inputCoord "position of the piece you want to move"
 
-             p2 <- inputCoord "2nd"
+             p2 <- inputCoord "space to move it to"
 
              if' (isValidMove b c p1 p2)
                  (return (p1, p2))
