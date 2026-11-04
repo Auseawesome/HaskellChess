@@ -19,10 +19,10 @@ zipVec :: Vector (a -> b) -> Vector a -> Vector b
 zipVec (fx, fy) (x, y) = (fx x, fy y)
 
 liftVec1 :: (a -> b) -> Vector a -> Vector b
-liftVec1 f = zipVec (toVec f)
+liftVec1 = zipVec . toVec
 
 liftVec2 :: (a -> b -> c) -> Vector a -> Vector b -> Vector c
-liftVec2 f p1 = zipVec (liftVec1 f p1)
+liftVec2 = (zipVec .) . liftVec1
 
 instance Num a => Num (Vector a) where
     -- Binary Num Functions
