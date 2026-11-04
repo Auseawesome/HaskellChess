@@ -81,12 +81,12 @@ isValidCastle b c p1 p2 | dy /= 0                   = False
                               empty        = emptyRaycast b v (p1 + v) rookPos
 
 isValidKingMove :: Board -> Color -> Coord -> Coord -> Bool
-isValidKingMove b c p1 p2 | validCastle  = True
-                          | (abs dx) > 1 = False
-                          | (abs dy) > 1 = False
-                          | otherwise    = True
-                          where (Vector dx dy) = p2 - p1
-                                validCastle    = isValidCastle b c p1 p2
+isValidKingMove b c p1 p2 | validCastle = True
+                          | abs dx > 1  = False
+                          | abs dy > 1  = False
+                          | otherwise   = True
+                          where Vector dx dy = p2 - p1
+                                validCastle  = isValidCastle b c p1 p2
 
 isValidMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of the board
