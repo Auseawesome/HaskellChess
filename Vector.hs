@@ -1,6 +1,8 @@
 module Vector(
     Coord,
 
+    zipVec,
+
     liftVec1, liftVec2,
 
     divVec, modVec
@@ -9,6 +11,9 @@ module Vector(
 type Vector a = (a, a)
 
 type Coord = Vector Int
+
+zipVec :: Vector (a -> b) -> Vector a -> Vector b
+zipVec (fx, fy) (x, y) = (fx x, fy y)
 
 liftVec1 :: (a -> b) -> Vector a -> Vector b
 liftVec1 f (x, y) = (f x, f y)
