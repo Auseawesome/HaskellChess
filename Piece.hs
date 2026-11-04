@@ -4,7 +4,10 @@ module Piece(
     Piece(Piece),
     Tile,
 
-    switchColor
+    switchColor,
+
+    tileColor, tileColor',
+    tileType, tileType'
 ) where
 
 data PieceType = Pawn | Bishop | Knight | Rook | Queen | King
