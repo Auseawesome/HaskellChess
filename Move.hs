@@ -10,6 +10,8 @@ import Piece
 import Vector
 import Board
 
+type MovePredicate = Board -> Coord -> Coord -> Bool
+
 emptyRaycast :: Board -> Coord -> Coord -> Coord -> Bool
 emptyRaycast b v acc t | acc == t            = True
                        | not $ isEmpty b acc = False
@@ -20,7 +22,7 @@ emptyRaycastList b v acc | not $ onBoard acc   = []
                          | not $ isEmpty b acc = []
                          | otherwise           = acc : emptyRaycastList b v (acc + v)
 
-isValidPawnDouble :: Board -> Coord -> Coord -> Bool
+isValidPawnDouble :: MovePredicate
 isValidPawnDouble b p1 p2 | y1 == y2           = False
                           | abs (y2 - y1) > 2  = False
                           | x1 /= x2           = False
@@ -37,7 +39,7 @@ isValidEnPassant b c p1 p2 | not (hasPawnDoubled b op p2) = False
                                  (Vector x2 _) = p2
                                  op            = switchColor c
 
-isValidPawnMove :: Board -> Coord -> Coord -> Bool
+isValidPawnMove :: MovePredicate
 isValidPawnMove b p1 p2 | c == White && y2 <= y1 = False                     -- White pawns can only move up in the y-direction
                         | c == Black && y2 >= y1 = False                     -- Black pawns can only move down in the y-direction
                         | abs (y2 - y1) /= 1     = isValidPawnDouble b p1 p2 -- Check double move if not moving 1 tile in y-direction
@@ -60,30 +62,30 @@ validPawnMoves b p = filter (isValidPawnMove b p) [fp, dp, lp, rp]
                          rp               = fp + (Vector 1    0)
 
 
-isValidBishopMove :: Board -> Coord -> Coord -> Bool
+isValidBishopMove :: MovePredicate
 isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
                           | otherwise            = emptyRaycast b v (p1 + v) p2
                           where (Vector dx dy) = p2 - p1
                                 v              = Vector (signum dx) (signum dy)
 
-isValidKnightMove :: Coord -> Coord -> Bool
-isValidKnightMove p1 p2 | dx == 0                  = False
-                        | dy == 0                  = False
-                        | (abs dx) + (abs dy) == 3 = True
-                        | otherwise                = False
-                        where (Vector dx dy) = p2 - p1
+isValidKnightMove :: MovePredicate
+isValidKnightMove _ p1 p2 | dx == 0                  = False
+                          | dy == 0                  = False
+                          | (abs dx) + (abs dy) == 3 = True
+                          | otherwise                = False
+                          where (Vector dx dy) = p2 - p1
 
-isValidRookMove :: Board -> Coord -> Coord -> Bool
+isValidRookMove :: MovePredicate
 isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (p1 + v) p2
                         | otherwise          = False
                         where (Vector dx dy) = p2 - p1
                               v              = (Vector (signum dx) (signum dy))
 
-isValidQueenMove :: Board -> Coord -> Coord -> Bool
+isValidQueenMove :: MovePredicate
 isValidQueenMove b p1 p2 = isValidBishopMove b p1 p2 || isValidRookMove b p1 p2
 
 -- TODO: Stop castling through check
-isValidCastle :: Board -> Coord -> Coord -> Bool
+isValidCastle :: MovePredicate
 isValidCastle b p1 p2 | dy /= 0                   = False
                       | (abs dx) /= 2             = False
                       | hasKingMoved b c          = False
@@ -97,7 +99,7 @@ isValidCastle b p1 p2 | dy /= 0                   = False
                             v                = Vector (signum dx) 0
                             empty            = emptyRaycast b v (p1 + v) rookPos
 
-isValidKingMove :: Board -> Coord -> Coord -> Bool
+isValidKingMove :: MovePredicate
 isValidKingMove b p1 p2 | validCastle = True
                         | abs dx > 1  = False
                         | abs dy > 1  = False
@@ -115,7 +117,7 @@ isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of 
                        | otherwise        = case pieceType of
                              Pawn   -> isValidPawnMove   b p1 p2
                              Bishop -> isValidBishopMove b p1 p2
-                             Knight -> isValidKnightMove   p1 p2
+                             Knight -> isValidKnightMove b p1 p2
                              Rook   -> isValidRookMove   b p1 p2
                              Queen  -> isValidQueenMove  b p1 p2
                              King   -> isValidKingMove   b p1 p2
