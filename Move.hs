@@ -12,6 +12,8 @@ import Board
 
 type MovePredicate = Board -> Coord -> Coord -> Bool
 
+type MoveLister = Board -> Coord -> [Coord]
+
 emptyRaycast :: Board -> Coord -> Coord -> Coord -> Bool
 emptyRaycast b v acc t | acc == t            = True
                        | not $ isEmpty b acc = False
@@ -52,7 +54,7 @@ isValidPawnMove b p1 p2 | c == White && y2 <= y1 = False                     -- 
                               c              = colorAt b p1
                               isEnPassant    = isValidEnPassant b c p1 p2
 
-validPawnMoves :: Board -> Coord -> [Coord]
+validPawnMoves :: MoveLister
 validPawnMoves b p = filter (isValidPawnMove b p) [fp, dp, lp, rp]
                    where Just (Piece c _) = getTile b p
                          fw               = if' (c == White) 1 (-1)
