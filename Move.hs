@@ -122,10 +122,9 @@ updatePawnFlags c Pawn p1 p2 | abs dy < 2 = clearPawnDoubled
 updatePawnFlags _ _    _  _               = clearPawnDoubled
 
 updateAllFlags :: Color -> PieceType -> Coord -> Coord -> Board -> Board
-updateAllFlags c t p1 p2 b = b3
-                           where b1 = updateKingFlags c t       b
-                                 b2 = updateRookFlags c t p1    b1
-                                 b3 = updatePawnFlags c t p1 p2 b2
+updateAllFlags c t p1 p2 b = updatePawnFlags c t p1 p2 $
+                             updateRookFlags c t p1    $
+                             updateKingFlags c t       b
 
 enPassant :: Coord -> Coord -> Board -> Board
 enPassant p1 p2 b = setPiece p1     Nothing         $
