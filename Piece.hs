@@ -21,3 +21,9 @@ type Tile = Maybe Piece
 switchColor :: Color -> Color
 switchColor White = Black
 switchColor Black = White
+
+tileColor :: Tile -> Color
+tileColor (Just p) = color p
+
+tileType :: Tile -> PieceType
+tileType (Just p) = piece_type p
