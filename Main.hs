@@ -62,9 +62,8 @@ inputMove b = do p1 <- inputCoord "Input the position of the piece you want to m
                      (putStrLn "That move is invalid, please try another one!" >> inputMove b)
 
 moveNoCheck :: Board -> IO Board
-moveNoCheck b = do let c  = turn b
-                   (p1, p2) <- inputMove b
-                   let b' = makeMove c p1 p2 b
+moveNoCheck b = do (p1, p2) <- inputMove b
+                   let b' = makeMove (turn b) p1 p2 b
 
                    if' (currentlyInCheck b')
                        (putStrLn "That move would leave you in check!" >> moveNoCheck b)
