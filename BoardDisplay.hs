@@ -30,7 +30,7 @@ numberRows :: Int -> [String] -> [String]
 numberRows _ []     = []
 numberRows i (x:xs) = ((show i)++" |"++x):(numberRows (i+1) xs)
 
--- Generates the number headers for the board
+-- Generates the file headers for the board
 headerLine :: String
 headerLine = h5
            where h1 = ['a'..'h']         -- Generates header letters for board, ranging from a to h
@@ -42,12 +42,11 @@ headerLine = h5
 -- Displays the board as a string
 displayBoard :: Board -> String
 displayBoard b = concat d8
-               where c  = chunk 8 $ grid b            -- Chunks the board into a list of rows
-                     d1 = map displayLine          c  -- Applies displayLine to each row to add padding and dividing vertical lines
-                     d2 = numberRows 1             d1 -- Adds the row numbers
-                     d3 = intersperse dividingLine d2 -- Adds dividing horizontal lines to each row
-                     d4 = intersperse bufferLine   d3 -- Adds buffer lines between each row and divider
-                     d5 = surround [bufferLine]    d4 -- Adds extra buffer lines to the outsides
-                     d6 = dividingLine :           d5 -- Adds a dividing line at the top
-                     d7 = headerLine :             d6 -- Adds the column headers above the dividing line
-                     d8 = map (++"\n")             d7 -- Adds new lines to the end of every line
+               where c  = chunk 8 $ grid b                 -- Chunks the board into a list of rows
+                     d1 = map displayLine          c       -- Applies displayLine to each row to add padding and dividing vertical lines
+                     d2 = numberRows 1             d1      -- Adds the row numbers
+                     d3 = intersperse dividingLine d2      -- Adds dividing horizontal lines to each row
+                     d4 = intersperse bufferLine   d3      -- Adds buffer lines between each row and divider
+                     d5 = surround [bufferLine]    d4      -- Adds extra buffer lines to the outsides
+                     d6 = d5 ++ [dividingLine, headerLine] -- Adds a dividing line and file header at the bottom
+                     d8 = map (++"\n")             d7      -- Adds new lines to the end of every line
