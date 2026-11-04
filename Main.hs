@@ -80,18 +80,18 @@ moveNoCheck c b = do
                    (putStrLn "That move would leave you in check!" >> moveNoCheck c b)
                    (return b')
 
-moveLoop :: Color -> Board -> IO()
-moveLoop c b = do
-            putStrLn ("It is "++(show c)++"'s Turn\n")
-            if' (isPlayerInCheck c b) (putStrLn "You are in check!") (return ())
-            putStrLn $ displayBoard b c
+moveLoop :: Board -> IO()
+moveLoop b = do let c = turn b
+                putStrLn ("It is "++(show c)++"'s Turn\n")
+                if' (isPlayerInCheck c b) (putStrLn "You are in check!") (return ())
+                putStrLn $ displayBoard b
 
-            b' <- moveNoCheck c b
+                b' <- moveNoCheck c b
 
-            moveLoop (switchColor c) $ b'
+                moveLoop $ nextTurn b'
 
 main :: IO()
 main = do
     let board = makeBoard
-    moveLoop White board
+    moveLoop board
 

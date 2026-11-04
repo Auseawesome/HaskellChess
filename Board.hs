@@ -6,6 +6,7 @@ module Board(
 
   hasKingMoved, hasRookMoved, hasPawnDoubled,
 
+  nextTurn,
   flagKingMoved, flagRookMoved,
   flagPawnDoubled, clearPawnDoubled,
 
