@@ -70,6 +70,11 @@ isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
                           where (Vector dx dy) = p2 - p1
                                 v              = Vector (signum dx) (signum dy)
 
+validBishopMoves :: MoveLister
+validBishopMoves b p = do vx <- [-1, 1]
+                          vy <- [-1, 1]
+                          emptyRaycastList b (Vector vx vy) p
+
 isValidKnightMove :: MovePredicate
 isValidKnightMove _ p1 p2 | dx == 0                  = False
                           | dy == 0                  = False
