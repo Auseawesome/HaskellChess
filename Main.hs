@@ -52,19 +52,18 @@ inputCoord msg = do
 
               returnOrRetry (inputCoord msg) p'
 
-inputMove :: Color -> Board -> IO (Coord, Coord)
-inputMove c b = do
-             p1 <- inputCoord "Input the position of the piece you want to move (eg. d2): "
+inputMove :: Board -> IO (Coord, Coord)
+inputMove b = do p1 <- inputCoord "Input the position of the piece you want to move (eg. d2): "
 
-             p2 <- inputCoord "Input the space to move it to (eg. d4): "
+                 p2 <- inputCoord "Input the space to move it to (eg. d4): "
 
-             if' (isValidMove b c p1 p2)
-                 (return (p1, p2))
-                 (putStrLn "That move is invalid, please try another one!" >> inputMove c b)
+                 if' (isValidMove b (turn b) p1 p2)
+                     (return (p1, p2))
+                     (putStrLn "That move is invalid, please try another one!" >> inputMove b)
 
 moveNoCheck :: Board -> IO Board
 moveNoCheck b = do let c  = turn b
-                   (p1, p2) <- inputMove c b
+                   (p1, p2) <- inputMove b
                    let b' = makeMove c p1 p2 b
 
                    if' (currentlyInCheck b')
