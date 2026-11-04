@@ -26,6 +26,10 @@ liftVec1 = vecApply . toVec
 liftVec2 :: (a -> b -> c) -> Vector a -> Vector b -> Vector c
 liftVec2 = (vecApply .) . liftVec1
 
+instance Functor Vector where
+    fmap   = liftVec1
+    x <$ v = toVec x
+
 instance Num a => Num (Vector a) where
     -- Binary Num Functions
     (+) = liftVec2 (+)
