@@ -116,9 +116,11 @@ updateRookFlags c Rook (Vector x _) = flagRookMoved c x
 updateRookFlags _ _    _            = id
 
 updatePawnFlags :: Color -> PieceType -> Coord -> Coord -> Board -> Board
-updatePawnFlags c Pawn (Vector x y1) (Vector _ y2) | abs (y2-y1) < 2 = clearPawnDoubled
-                                                   | otherwise       = flagPawnDoubled c x 
-updatePawnFlags _ _    _             _                               = clearPawnDoubled
+updatePawnFlags c Pawn p1 p2 | abs dy < 2 = clearPawnDoubled
+                             | otherwise  = flagPawnDoubled c x
+                             where dy = yPos (p2 - p1)
+                                   x  = xPos p1
+updatePawnFlags _ _    _  _               = clearPawnDoubled
 
 updateAllFlags :: Color -> PieceType -> Coord -> Coord -> Board -> Board
 updateAllFlags c t p1 p2 b = b3
