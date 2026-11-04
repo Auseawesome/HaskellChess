@@ -46,7 +46,7 @@ charToRank  c  = errLn (c:" is not a valid rank.")
 
 inputCoord :: String -> IO Coord
 inputCoord msg = do
-              putStrLn ("Input the "++msg++" (eg. a1): ")
+              putStrLn msg
               p <- getLine
               let p' = chessToCoord p
 
@@ -54,9 +54,9 @@ inputCoord msg = do
 
 inputMove :: Color -> Board -> IO (Coord, Coord)
 inputMove c b = do
-             p1 <- inputCoord "position of the piece you want to move"
+             p1 <- inputCoord "Input the position of the piece you want to move (eg. d2): "
 
-             p2 <- inputCoord "space to move it to"
+             p2 <- inputCoord "Input the space to move it to (eg. d4): "
 
              if' (isValidMove b c p1 p2)
                  (return (p1, p2))
