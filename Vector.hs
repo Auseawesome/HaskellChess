@@ -30,6 +30,10 @@ instance Functor Vector where
     fmap   = liftVec1
     x <$ v = toVec x
 
+instance Applicative Vector where
+    pure   = toVec
+    liftA2 = liftVec2
+
 instance Num a => Num (Vector a) where
     -- Binary Num Functions
     (+) = liftVec2 (+)
