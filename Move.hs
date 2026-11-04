@@ -10,12 +10,6 @@ import Piece
 import Vector
 import Board
 
-addVec :: Coord -> Coord -> Coord
-addVec (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
-
-subVec :: Coord -> Coord -> Coord
-subVec (x1, y1) (x2, y2) = (x1 - x2, y1 - y2)
-
 emptyRaycast :: Board -> Coord -> Coord -> Coord -> Bool
 emptyRaycast b v acc t | acc == t            = True
                        | not $ isEmpty b acc = False
