@@ -62,12 +62,6 @@ inputMove c b = do
                  (return (p1, p2))
                  (putStrLn "That move is invalid, please try another one!" >> inputMove c b)
 
-isPlayerInCheck :: Color -> Board -> Bool
-isPlayerInCheck c b = isSpaceAttacked b c $ findKing b c
-
-isCurrentPlayerInCheck :: Board -> Bool
-isCurrentPlayerInCheck b = isPlayerInCheck (turn b) b
-
 moveNoCheck :: Board -> IO Board
 moveNoCheck b = do let c  = turn b
                    (p1, p2) <- inputMove c b

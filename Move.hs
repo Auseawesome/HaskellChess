@@ -1,4 +1,10 @@
-module Move(isValidMove, makeMove, isSpaceAttacked) where
+module Move(
+      isValidMove,
+      makeMove,
+
+      isSpaceAttacked,
+      isPlayerInCheck, isCurrentPlayerInCheck
+) where
 import ChessUtils
 import Piece
 import Board
@@ -147,6 +153,12 @@ castle c p1 p2 b = movePiece (rookSide, y1) rookPos $
 
 isSpaceAttacked :: Board -> Color -> Coord -> Bool
 isSpaceAttacked b c p2 = any (\p1 -> isValidMove b (switchColor c) p1 p2) makeCoords
+
+isPlayerInCheck :: Color -> Board -> Bool
+isPlayerInCheck c b = isSpaceAttacked b c $ findKing b c
+
+isCurrentPlayerInCheck :: Board -> Bool
+isCurrentPlayerInCheck b = isPlayerInCheck (turn b) b
 
 makeMove :: Color -> Coord -> Coord -> Board -> Board
 makeMove c p1 p2 b | not valid   = b
