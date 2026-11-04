@@ -68,7 +68,7 @@ findKing b c = p
              where Just p = findInBoard (== Just (Piece c King)) b -- Assumes king must be present, should always be safe
 
 isPlayerInCheck :: Color -> Board -> Bool
-isPlayerInCheck c b = isInCheck b c $ findKing b c
+isPlayerInCheck c b = isSpaceAttacked b c $ findKing b c
 
 isCurrentPlayerInCheck :: Board -> Bool
 isCurrentPlayerInCheck b = isPlayerInCheck (turn b) b
