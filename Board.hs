@@ -43,14 +43,14 @@ backRankPiece c 7 = Just $ Piece c Rook
 backRankPiece _ _ = Nothing
 
 defaultPiece :: Coord -> Tile
-defaultPiece (x, 0) = backRankPiece White x
-defaultPiece (_, 1) = Just $ Piece White Pawn
-defaultPiece (x, 7) = backRankPiece Black x
-defaultPiece (_, 6) = Just $ Piece Black Pawn
-defaultPiece (_, _) = Nothing
+defaultPiece (Vector x 0) = backRankPiece White x
+defaultPiece (Vector _ 1) = Just $ Piece White Pawn
+defaultPiece (Vector x 7) = backRankPiece Black x
+defaultPiece (Vector _ 6) = Just $ Piece Black Pawn
+defaultPiece (Vector _ _) = Nothing
 
 makeCoords :: [Coord]
-makeCoords = [(x,y) |  y <- [0..7], x <- [0..7]]
+makeCoords = [Vector x y |  y <- [0..7], x <- [0..7]]
 
 makeBoard :: Board
 makeBoard = Board grid White (False, False) ((False, False), (False, False)) (Nothing, Nothing)
@@ -62,7 +62,7 @@ makeBoard = Board grid White (False, False) ((False, False), (False, False)) (No
 
 -- Creates an index into the board grid from a coordinate pair
 index :: Coord -> Int
-index (x, y) = x + y * 8
+index (Vector x y) = x + y * 8
 
 -- Checks whether a coordinate is on the board before generating an index
 validIndex :: Coord -> Maybe Int
@@ -71,7 +71,7 @@ validIndex p | not $ onBoard p = Nothing
 
 -- Gets a coordinate from an index, inverse of 'index'
 indexToCoord :: Int -> Coord
-indexToCoord i = (mod i 8, div i 8)
+indexToCoord i = Vector (mod i 8) (div i 8)
 
 -- Board state data is stored in pairs, get the state corresponding to the correct side
 boardColorData :: (a, a) -> Color -> a
@@ -106,7 +106,7 @@ hasRookMoved b c x | x == 0    = d1
                    where (d1, d2) = boardColorData (rookMoved b) c
 
 hasPawnDoubled :: Board -> Color -> Coord -> Bool
-hasPawnDoubled b c (x, _) = boardColorData (pawnDoubled b) c == Just x
+hasPawnDoubled b c (Vector x _) = boardColorData (pawnDoubled b) c == Just x
 
 -------------------
 -- State Setters --
@@ -139,7 +139,7 @@ clearPawnDoubled b =  b {pawnDoubled = (Nothing, Nothing)}
 --------------------
 
 onBoard :: Coord -> Bool
-onBoard (x, y) = x >= 0 && y >= 0 && x < 8 && y < 8
+onBoard (Vector x y) = x >= 0 && y >= 0 && x < 8 && y < 8
 
 getPiece :: Board -> Coord -> Tile
 getPiece b p = do p' <- validIndex p

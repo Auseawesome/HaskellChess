@@ -1,4 +1,5 @@
 module Vector(
+    Vector(Vector, xPos, yPos),
     Coord,
 
     toVec, vecApply,
@@ -8,15 +9,16 @@ module Vector(
     divVec, modVec
 ) where
 
-type Vector a = (a, a)
+data Vector a = Vector {xPos :: a, yPos :: a}
+    deriving (Eq)
 
 type Coord = Vector Int
 
 toVec :: a -> Vector a
-toVec x = (x, x)
+toVec x = Vector x x
 
 vecApply :: Vector (a -> b) -> Vector a -> Vector b
-vecApply (fx, fy) (x, y) = (fx x, fy y)
+vecApply (Vector fx fy) (Vector x y) = Vector (fx x) (fy y)
 
 liftVec1 :: (a -> b) -> Vector a -> Vector b
 liftVec1 = vecApply . toVec

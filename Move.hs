@@ -21,16 +21,16 @@ isValidPawnDouble b p1 p2 | y1 == y2           = False
                           | x1 /= x2           = False
                           | y1 /= 1 && y1 /= 6 = False
                           | otherwise          = isEmpty b p2
-                          where (x1, y1) = p1
-                                (x2, y2) = p2
+                          where (Vector x1 y1) = p1
+                                (Vector x2 y2) = p2
 
 isValidEnPassant :: Board -> Color -> Coord -> Coord -> Bool
 isValidEnPassant b c p1 p2 | not (hasPawnDoubled b op p2) = False
                            | not (isEmpty b p2)           = False
-                           | otherwise                    = isOpposing b c (x2, y1)
-                           where (_, y1) = p1
-                                 (x2, _) = p2
-                                 op      = switchColor c
+                           | otherwise                    = isOpposing b c $ Vector x2 y1
+                           where (Vector _ y1) = p1
+                                 (Vector x2 _) = p2
+                                 op            = switchColor c
 
 isValidPawnMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidPawnMove b c p1 p2 | c == White && y2 <= y1 = False                     -- White pawns can only move up in the y-direction
@@ -40,31 +40,28 @@ isValidPawnMove b c p1 p2 | c == White && y2 <= y1 = False                     -
                           | abs(x1 - x2) /= 1      = False                     -- If not moving directly forward, only move 1 tile in x-direction
                           | isEnPassant            = True                      -- Handle en-passant special case
                           | otherwise              = isOpposing b c p2         -- If going diagonal, piece must be of opposing color
-                          where (x1, y1)    = p1
-                                (x2, y2)    = p2
-                                isEnPassant = isValidEnPassant b c p1 p2
+                          where (Vector x1 y1) = p1
+                                (Vector x2 y2) = p2
+                                isEnPassant    = isValidEnPassant b c p1 p2
 
 isValidBishopMove :: Board -> Coord -> Coord -> Bool
 isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
                           | otherwise            = emptyRaycast b v (p1 + v) p2
-                          where (x1, y1) = p1
-                                (x2, y2) = p2
-                                dx = x2 - x1
-                                dy = y2 - y1
-                                v = ((signum dx), (signum dy))
+                          where (Vector dx dy) = p2 - p1
+                                v              = Vector (signum dx) (signum dy)
 
 isValidKnightMove :: Coord -> Coord -> Bool
 isValidKnightMove p1 p2 | dx == 0                  = False
                         | dy == 0                  = False
                         | (abs dx) + (abs dy) == 3 = True
                         | otherwise                = False
-                        where (dx, dy) = p2 - p1
+                        where (Vector dx dy) = p2 - p1
 
 isValidRookMove :: Board -> Coord -> Coord -> Bool
 isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (p1 + v) p2
                         | otherwise          = False
-                        where (dx, dy) = p2 - p1
-                              v = ((signum dx), (signum dy))
+                        where (Vector dx dy) = p2 - p1
+                              v              = (Vector (signum dx) (signum dy))
 
 isValidQueenMove :: Board -> Coord -> Coord -> Bool
 isValidQueenMove b p1 p2 = isValidBishopMove b p1 p2 || isValidRookMove b p1 p2
@@ -77,20 +74,20 @@ isValidCastle b c p1 p2 | dy /= 0                   = False
                         | hasRookMoved b c rookSide = False
                         | not empty                 = False
                         | otherwise                 = Just (Piece c Rook) == (getPiece b rookPos)
-                        where (dx, dy) = p2 - p1
-                              (_ , y ) = p1
-                              rookSide = if' (dx < 0) 0 8
-                              rookPos  = (rookSide, y)
-                              v        = (signum dx, 0)
-                              empty    = emptyRaycast b v (p1 + v) rookPos
+                        where (Vector dx dy) = p2 - p1
+                              y              = yPos p1
+                              rookSide       = if' (dx < 0) 0 8
+                              rookPos        = Vector rookSide y
+                              v              = Vector (signum dx) 0
+                              empty          = emptyRaycast b v (p1 + v) rookPos
 
 isValidKingMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidKingMove b c p1 p2 | validCastle  = True
                           | (abs dx) > 1 = False
                           | (abs dy) > 1 = False
                           | otherwise    = True
-                          where (dx, dy)    = p2 - p1
-                                validCastle = isValidCastle b c p1 p2
+                          where (Vector dx dy) = p2 - p1
+                                validCastle    = isValidCastle b c p1 p2
 
 isValidMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of the board
@@ -115,13 +112,13 @@ updateKingFlags c King = flagKingMoved c
 updateKingFlags _ _    = id
 
 updateRookFlags :: Color -> PieceType -> Coord -> Board -> Board
-updateRookFlags c Rook (x, _) = flagRookMoved c x
-updateRookFlags _ _    _      = id
+updateRookFlags c Rook (Vector x _) = flagRookMoved c x
+updateRookFlags _ _    _            = id
 
 updatePawnFlags :: Color -> PieceType -> Coord -> Coord -> Board -> Board
-updatePawnFlags c Pawn (x, y1) (_, y2) | abs (y2-y1) < 2 = clearPawnDoubled
-                                       | otherwise       = flagPawnDoubled c x 
-updatePawnFlags _ _    _       _                         = clearPawnDoubled
+updatePawnFlags c Pawn (Vector x y1) (Vector _ y2) | abs (y2-y1) < 2 = clearPawnDoubled
+                                                   | otherwise       = flagPawnDoubled c x 
+updatePawnFlags _ _    _             _                               = clearPawnDoubled
 
 updateAllFlags :: Color -> PieceType -> Coord -> Coord -> Board -> Board
 updateAllFlags c t p1 p2 b = b3
@@ -130,21 +127,20 @@ updateAllFlags c t p1 p2 b = b3
                                  b3 = updatePawnFlags c t p1 p2 b2
 
 enPassant :: Coord -> Coord -> Board -> Board
-enPassant p1 p2 b = setPiece p1       Nothing         $
-                    setPiece p2       (getPiece b p1) $
-                    setPiece (x2, y1) Nothing         b
-                  where (_, y1) = p1
-                        (x2, _) = p2
+enPassant p1 p2 b = setPiece p1     Nothing         $
+                    setPiece p2     (getPiece b p1) $
+                    setPiece pSpace Nothing         b
+                  where pSpace = Vector (xPos p2) (yPos p1)
 
 castle :: Color -> Coord -> Coord -> Board -> Board
-castle c p1 p2 b = movePiece (rookSide, y1) rookPos $
-                   movePiece p1             p2      $
-                   flagRookMoved c rookSide         b
-                 where (dx, dy) = p2 - p1
-                       (_ , y1) = p1
-                       (x2, _ ) = p2
-                       rookSide = if' (dx < 0) 0 8
-                       rookPos  = (x2 - (signum dx), y1)
+castle c p1 p2 b = movePiece (Vector rookSide y1) rookPos $
+                   movePiece p1                   p2      $
+                   flagRookMoved c rookSide               b
+                 where (Vector dx dy) = p2 - p1
+                       y1             = yPos p1
+                       x2             = xPos p2
+                       rookSide       = if' (dx < 0) 0 8
+                       rookPos        = Vector (x2 - (signum dx)) (y1)
 
 isSpaceAttacked :: Board -> Color -> Coord -> Bool
 isSpaceAttacked b c p2 = any (\p1 -> isValidMove b (switchColor c) p1 p2) makeCoords

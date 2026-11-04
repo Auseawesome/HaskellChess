@@ -37,7 +37,7 @@ chessToCoord ""       = errLn "An empty string is not a valid coordinate."
 chessToCoord (x:y:"") = do x' <- charToFile x
                            y' <- charToRank y
 
-                           let p = (x', y')
+                           let p = Vector x' y'
 
                            if' (onBoard p)
                                (noErr p)
