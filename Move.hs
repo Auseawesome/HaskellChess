@@ -74,12 +74,11 @@ isValidCastle b c p1 p2 | dy /= 0                   = False
                         | hasRookMoved b c rookSide = False
                         | not empty                 = False
                         | otherwise                 = Just (Piece c Rook) == (getPiece b rookPos)
-                        where (Vector dx dy) = p2 - p1
-                              y              = yPos p1
-                              rookSide       = if' (dx < 0) 0 8
-                              rookPos        = Vector rookSide y
-                              v              = Vector (signum dx) 0
-                              empty          = emptyRaycast b v (p1 + v) rookPos
+                        where Vector dx dy = p2 - p1
+                              rookSide     = if' (dx < 0) 0 8
+                              rookPos      = p1 {xPos = rookSide}
+                              v            = Vector (signum dx) 0
+                              empty        = emptyRaycast b v (p1 + v) rookPos
 
 isValidKingMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidKingMove b c p1 p2 | validCastle  = True
