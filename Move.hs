@@ -13,7 +13,7 @@ import Board
 emptyRaycast :: Board -> Coord -> Coord -> Coord -> Bool
 emptyRaycast b v acc t | acc == t            = True
                        | not $ isEmpty b acc = False
-                       | otherwise           = emptyRaycast b v (addVec acc v) t
+                       | otherwise           = emptyRaycast b v (acc + v) t
 
 isValidPawnDouble :: Board -> Coord -> Coord -> Bool
 isValidPawnDouble b p1 p2 | y1 == y2           = False
@@ -46,7 +46,7 @@ isValidPawnMove b c p1 p2 | c == White && y2 <= y1 = False                     -
 
 isValidBishopMove :: Board -> Coord -> Coord -> Bool
 isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
-                          | otherwise            = emptyRaycast b v (addVec p1 v) p2
+                          | otherwise            = emptyRaycast b v (p1 + v) p2
                           where (x1, y1) = p1
                                 (x2, y2) = p2
                                 dx = x2 - x1
@@ -58,12 +58,12 @@ isValidKnightMove p1 p2 | dx == 0                  = False
                         | dy == 0                  = False
                         | (abs dx) + (abs dy) == 3 = True
                         | otherwise                = False
-                        where (dx, dy) = subVec p2 p1
+                        where (dx, dy) = p2 - p1
 
 isValidRookMove :: Board -> Coord -> Coord -> Bool
-isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (addVec p1 v) p2
+isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (p1 + v) p2
                         | otherwise          = False
-                        where (dx, dy) = subVec p2 p1
+                        where (dx, dy) = p2 - p1
                               v = ((signum dx), (signum dy))
 
 isValidQueenMove :: Board -> Coord -> Coord -> Bool
@@ -77,19 +77,19 @@ isValidCastle b c p1 p2 | dy /= 0                   = False
                         | hasRookMoved b c rookSide = False
                         | not empty                 = False
                         | otherwise                 = Just (Piece c Rook) == (getPiece b rookPos)
-                        where (dx, dy) = subVec p2 p1
+                        where (dx, dy) = p2 - p1
                               (_ , y ) = p1
                               rookSide = if' (dx < 0) 0 8
                               rookPos  = (rookSide, y)
                               v        = (signum dx, 0)
-                              empty    = emptyRaycast b v (addVec p1 v) rookPos
+                              empty    = emptyRaycast b v (p1 + v) rookPos
 
 isValidKingMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidKingMove b c p1 p2 | validCastle  = True
                           | (abs dx) > 1 = False
                           | (abs dy) > 1 = False
                           | otherwise    = True
-                          where (dx, dy)    = subVec p2 p1
+                          where (dx, dy)    = p2 - p1
                                 validCastle = isValidCastle b c p1 p2
 
 isValidMove :: Board -> Color -> Coord -> Coord -> Bool
@@ -140,7 +140,7 @@ castle :: Color -> Coord -> Coord -> Board -> Board
 castle c p1 p2 b = movePiece (rookSide, y1) rookPos $
                    movePiece p1             p2      $
                    flagRookMoved c rookSide         b
-                 where (dx, dy) = subVec p2 p1
+                 where (dx, dy) = p2 - p1
                        (_ , y1) = p1
                        (x2, _ ) = p2
                        rookSide = if' (dx < 0) 0 8

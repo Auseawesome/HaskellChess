@@ -1,9 +1,7 @@
 module Vector(
     Coord,
 
-    liftVec1, liftVec2,
-
-    addVec, subVec
+    liftVec1, liftVec2
 ) where
 
 type Coord = (Int, Int)
@@ -14,9 +12,16 @@ liftVec1 f (x, y) = (f x, f y)
 liftVec2 :: (Int -> Int -> Int) -> Coord -> Coord -> Coord
 liftVec2 f (x1, y1) (x2, y2) = (f x1 x2, f y1 y2)
 
-addVec :: Coord -> Coord -> Coord
-addVec = liftVec2 (+)
+instance Num Coord where
+    -- Binary Num Functions
+    (+) = liftVec2 (+)
+    (-) = liftVec2 (-)
+    (*) = liftVec2 (*)
 
-subVec :: Coord -> Coord -> Coord
-subVec = liftVec2 (-)
-
+    -- Single Num Functions
+    negate = liftVec1 negate
+    abs    = liftVec1 negate
+    signum = liftVec1 signum
+    
+    -- Special Case Function
+    fromInteger x = (fromInteger x, fromInteger x)
