@@ -45,6 +45,16 @@ isValidPawnMove b p1 p2 | c == White && y2 <= y1 = False                     -- 
                               Just (Piece c _) = getPiece b p1
                               isEnPassant      = isValidEnPassant b c p1 p2
 
+validPawnMoves :: Board -> Coord -> [Coord]
+validPawnMoves b p = filter (isValidPawnMove b p) [fp, dp, lp, rp]
+                   where Just (Piece c _) = getPiece b p
+                         fw               = if' (c == White) 1 (-1)
+                         fp               = p  + (Vector 0   fw)
+                         dp               = fp + (Vector 0   fw)
+                         lp               = fp + (Vector (-1) 0)
+                         rp               = fp + (Vector 1    0)
+
+
 isValidBishopMove :: Board -> Coord -> Coord -> Bool
 isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
                           | otherwise            = emptyRaycast b v (p1 + v) p2
