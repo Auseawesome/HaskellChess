@@ -68,7 +68,7 @@ index (Vector x y) = x + y * 8
 -- Checks whether a coordinate is on the board before generating an index
 validIndex :: Coord -> Maybe Int
 validIndex p | not $ onBoard p = Nothing
-             | otherwise = Just $ index p
+             | otherwise       = Just $ index p
 
 -- Gets a coordinate from an index, inverse of 'index'
 indexToCoord :: Int -> Coord
