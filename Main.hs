@@ -71,8 +71,7 @@ moveNoCheck b = do let c  = turn b
                        (return b')
 
 moveLoop :: Board -> IO()
-moveLoop b = do let c = turn b
-                putStrLn ("It is "++(show c)++"'s Turn\n")
+moveLoop b = do putStrLn ("It is " ++ shows (turn b) "'s Turn\n")
                 if' (currentlyInCheck b) (putStrLn "You are in check!") (return ())
                 putStrLn $ displayBoard b
 
