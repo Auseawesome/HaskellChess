@@ -2,6 +2,8 @@ module Vector(
     Vector(Vector, xPos, yPos),
     Coord,
 
+    inBounds,
+
     divVec, modVec
 ) where
 
@@ -9,6 +11,13 @@ data Vector a = Vector {xPos :: a, yPos :: a}
     deriving (Eq)
 
 type Coord = Vector Int
+
+-- Check whether a vector is within some bounds, lower inclusive bound and exclusive upper bound
+inBounds :: Ord a => Vector a -> Vector a -> Vector a -> Bool
+inBounds l h p = x >= lx && y >= ly && x < hx && y < hy
+               where Vector lx ly = l
+                     Vector hx hy = h
+                     Vector x  y  = p
 
 instance Functor Vector where
     fmap   = (<*>) . pure
