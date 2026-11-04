@@ -10,11 +10,11 @@ module Board(
   flagKingMoved, flagRookMoved,
   flagPawnDoubled, clearPawnDoubled,
 
-  onBoard, getPiece,
+  onBoard, getTile,
   isEmpty, isAlly, isOpposing,
   findInBoard, findKing,
 
-  setPiece, movePiece
+  setTile, movePiece
 ) where
 import Piece
 import Vector
@@ -143,22 +143,22 @@ clearPawnDoubled b =  b {pawnDoubled = (Nothing, Nothing)}
 onBoard :: Coord -> Bool
 onBoard = inBounds (pure 0) (pure 8)
 
-getPiece :: Board -> Coord -> Tile
-getPiece b p = do p' <- validIndex p
-                  grid b !! p'
+getTile :: Board -> Coord -> Tile
+getTile b p = do p' <- validIndex p
+                 grid b !! p'
 
 isEmpty :: Board -> Coord -> Bool
-isEmpty b p = getPiece b p == Nothing
+isEmpty b p = getTile b p == Nothing
 
 isAlly :: Board -> Color -> Coord -> Bool
 isAlly b c1 p | isEmpty b p = False
               | otherwise = c1 == c2
-              where (Just (Piece c2 _)) = getPiece b p
+              where (Just (Piece c2 _)) = getTile b p
 
 isOpposing :: Board -> Color -> Coord -> Bool
 isOpposing b c1 p | isEmpty b p = False
                   | otherwise = c1 /= c2
-                  where (Just (Piece c2 _)) = getPiece b p
+                  where (Just (Piece c2 _)) = getTile b p
 
 findInBoard :: (Tile -> Bool) -> Board -> Maybe Coord
 findInBoard f b = do i <- findInGrid f 0 $ grid b
@@ -172,11 +172,11 @@ findKing b c = p
 -- Piece Setters --
 -------------------
 
-setPiece :: Coord -> Tile -> Board -> Board
-setPiece p t b | not $ onBoard p = b
-               | otherwise       = b {grid = (x ++ (t : ys))}
-               where (x,_:ys) = splitAt (index p) (grid b)
+setTile :: Coord -> Tile -> Board -> Board
+setTile p t b | not $ onBoard p = b
+              | otherwise       = b {grid = (x ++ (t : ys))}
+              where (x,_:ys) = splitAt (index p) (grid b)
 
 movePiece :: Coord -> Coord -> Board -> Board
-movePiece p1 p2 b = setPiece p1 Nothing $ setPiece p2 (getPiece b p1) b
+movePiece p1 p2 b = setTile p1 Nothing $ setTile p2 (getTile b p1) b
 

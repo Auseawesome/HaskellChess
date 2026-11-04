@@ -49,12 +49,12 @@ isValidPawnMove b p1 p2 | c == White && y2 <= y1 = False                     -- 
                         | otherwise              = isOpposing b c p2         -- If going diagonal, piece must be of opposing color
                         where (Vector x1 y1)   = p1
                               (Vector x2 y2)   = p2
-                              Just (Piece c _) = getPiece b p1
+                              Just (Piece c _) = getTile b p1
                               isEnPassant      = isValidEnPassant b c p1 p2
 
 validPawnMoves :: Board -> Coord -> [Coord]
 validPawnMoves b p = filter (isValidPawnMove b p) [fp, dp, lp, rp]
-                   where Just (Piece c _) = getPiece b p
+                   where Just (Piece c _) = getTile b p
                          fw               = if' (c == White) 1 (-1)
                          fp               = p  + (Vector 0   fw)
                          dp               = fp + (Vector 0   fw)
@@ -91,9 +91,9 @@ isValidCastle b p1 p2 | dy /= 0                   = False
                       | hasKingMoved b c          = False
                       | hasRookMoved b c rookSide = False
                       | not empty                 = False
-                      | otherwise                 = Just (Piece c Rook) == (getPiece b rookPos)
+                      | otherwise                 = Just (Piece c Rook) == (getTile b rookPos)
                       where Vector dx dy     = p2 - p1
-                            Just (Piece c _) = getPiece b p1
+                            Just (Piece c _) = getTile b p1
                             rookSide         = if' (dx < 0) 0 8
                             rookPos          = p1 {xPos = rookSide}
                             v                = Vector (signum dx) 0
@@ -121,7 +121,7 @@ isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of 
                              Rook   -> isValidRookMove   b p1 p2
                              Queen  -> isValidQueenMove  b p1 p2
                              King   -> isValidKingMove   b p1 p2
-                       where piece                     = getPiece b p1
+                       where piece                     = getTile b p1
                              empty                     = piece == Nothing
                              Just (Piece c2 pieceType) = piece
 
@@ -146,9 +146,9 @@ updateAllFlags c t p1 p2 b = updatePawnFlags c t p1 p2 $
                              updateKingFlags c t       b
 
 enPassant :: Coord -> Coord -> Board -> Board
-enPassant p1 p2 b = setPiece p1     Nothing         $
-                    setPiece p2     (getPiece b p1) $
-                    setPiece pSpace Nothing         b
+enPassant p1 p2 b = setTile p1     Nothing        $
+                    setTile p2     (getTile b p1) $
+                    setTile pSpace Nothing        b
                   where pSpace = Vector (xPos p2) (yPos p1)
 
 castle :: Color -> Coord -> Coord -> Board -> Board
@@ -176,7 +176,7 @@ makeMove c p1 p2 b | not valid   = b
                    | isCastle    = uaf $ castle  c p1 p2 b
                    | otherwise   = uaf $ movePiece p1 p2 b
                    where valid            = isValidMove b c p1 p2
-                         Just (Piece _ t) = getPiece b p1
+                         Just (Piece _ t) = getTile b p1
                          isEnPassant      = (t == Pawn) && (isValidEnPassant b c p1 p2)
                          isCastle         = (t == King) && (isValidCastle    b   p1 p2)
                          uaf              = updateAllFlags c t p1 p2
