@@ -14,6 +14,9 @@ module Board(
   isEmpty, isAlly, isOpposing,
   findInBoard, findKing,
 
+  colorAt, colorAt',
+  typeAt, typeAt',
+
   setTile, movePiece
 ) where
 import Piece
@@ -167,6 +170,18 @@ findInBoard f b = do i <- findInGrid f 0 $ grid b
 findKing :: Board -> Color -> Coord
 findKing b c = p
              where Just p = findInBoard (== Just (Piece c King)) b -- Assumes king must be present, should always be safe
+
+colorAt :: Board -> Coord -> Color
+colorAt b = tileColor . getTile b
+
+colorAt' :: Board -> Coord -> Maybe Color
+colorAt' b = tileColor' . getTile b
+
+typeAt :: Board -> Coord -> PieceType
+typeAt b = tileType . getTile b
+
+typeAt' :: Board -> Coord -> Maybe PieceType
+typeAt' b = tileType' . getTile b
 
 -------------------
 -- Piece Setters --
