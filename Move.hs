@@ -135,14 +135,14 @@ enPassant p1 p2 b = setPiece p1     Nothing         $
                   where pSpace = Vector (xPos p2) (yPos p1)
 
 castle :: Color -> Coord -> Coord -> Board -> Board
-castle c p1 p2 b = movePiece (Vector rookSide y1) rookPos $
-                   movePiece p1                   p2      $
-                   flagRookMoved c rookSide               b
-                 where (Vector dx dy) = p2 - p1
-                       y1             = yPos p1
-                       x2             = xPos p2
-                       rookSide       = if' (dx < 0) 0 8
-                       rookPos        = Vector (x2 - (signum dx)) (y1)
+castle c p1 p2 b = movePiece rookOrigin rookPos $
+                   movePiece p1         p2      $
+                   flagRookMoved c rookSide     b
+                 where Vector dx dy = p2 - p1
+                       x            = xPos p2
+                       rookSide     = if' (dx < 0) 0 8
+                       rookOrigin   = p1 {xPos = rookSide}
+                       rookPos      = p1 {xPos = x - signum dx}
 
 isSpaceAttacked :: Board -> Color -> Coord -> Bool
 isSpaceAttacked b c p2 = any (\p1 -> isValidMove b (switchColor c) p1 p2) makeCoords
