@@ -114,16 +114,17 @@ isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of 
                        | empty            = False -- Can't move an empty tile
                        | c1 /= c2         = False -- Can't move a piece of opposing colour
                        | isAlly b c1 p2   = False -- Can't take piece of your own colour
-                       | otherwise        = case pieceType of
+                       | otherwise        = case pt of
                              Pawn   -> isValidPawnMove   b p1 p2
                              Bishop -> isValidBishopMove b p1 p2
                              Knight -> isValidKnightMove b p1 p2
                              Rook   -> isValidRookMove   b p1 p2
                              Queen  -> isValidQueenMove  b p1 p2
                              King   -> isValidKingMove   b p1 p2
-                       where piece                     = getTile b p1
-                             empty                     = piece == Nothing
-                             Just (Piece c2 pieceType) = piece
+                       where tile  = getTile b p1
+                             empty = tile == Nothing
+                             c2    = tileColor tile
+                             pt    = tileType  tile
 
 updateKingFlags :: Color -> PieceType -> Board -> Board
 updateKingFlags c King = flagKingMoved c
