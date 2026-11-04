@@ -10,10 +10,10 @@ type Vector a = (a, a)
 
 type Coord = Vector Int
 
-liftVec1 :: (a -> a) -> Vector a -> Vector a
+liftVec1 :: (a -> b) -> Vector a -> Vector b
 liftVec1 f (x, y) = (f x, f y)
 
-liftVec2 :: (a -> a -> a) -> Vector a -> Vector a -> Vector a
+liftVec2 :: (a -> b -> c) -> Vector a -> Vector b -> Vector c
 liftVec2 f (x1, y1) (x2, y2) = (f x1 x2, f y1 y2)
 
 instance Num a => Num (Vector a) where
