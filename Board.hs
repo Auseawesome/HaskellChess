@@ -1,5 +1,5 @@
 module Board(
-  Board(grid),
+  Board(grid, turn),
   Coord,
 
   makeCoords, makeBoard,
@@ -19,6 +19,7 @@ import Piece
 
 data Board = Board {
   grid        :: [Tile],
+  turn        :: Color,
   kingMoved   :: (Bool, Bool),
   rookMoved   :: ((Bool, Bool), (Bool, Bool)),
   pawnDoubled :: (Maybe Int, Maybe Int)
@@ -51,7 +52,7 @@ makeCoords :: [Coord]
 makeCoords = [(x,y) |  y <- [0..7], x <- [0..7]]
 
 makeBoard :: Board
-makeBoard = Board grid (False, False) ((False, False), (False, False)) (Nothing, Nothing)
+makeBoard = Board grid White (False, False) ((False, False), (False, False)) (Nothing, Nothing)
             where grid     = map defaultPiece makeCoords
 
 ---------------------
@@ -110,6 +111,9 @@ hasPawnDoubled b c (x, _) = boardColorData (pawnDoubled b) c == Just x
 -- State Setters --
 -------------------
 
+nextTurn :: Board -> Board
+nextTurn b = b {turn = switchColor $ turn b}
+
 flagKingMoved :: Color -> Board -> Board
 flagKingMoved White b = b {kingMoved = (True, hasKingMoved b Black)}
 flagKingMoved Black b = b {kingMoved = (hasKingMoved b White, True)}
@@ -127,7 +131,7 @@ flagPawnDoubled White x b = b {pawnDoubled = (Just x, Nothing)}
 flagPawnDoubled Black x b = b {pawnDoubled = (Nothing, Just x)}
 
 clearPawnDoubled :: Board -> Board
-clearPawnDoubled (Board g k r _) =  Board g k r (Nothing, Nothing)
+clearPawnDoubled b =  b {pawnDoubled = (Nothing, Nothing)}
 
 --------------------
 -- Piece Checkers --
