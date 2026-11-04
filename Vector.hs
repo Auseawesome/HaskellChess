@@ -2,8 +2,6 @@ module Vector(
     Vector(Vector, xPos, yPos),
     Coord,
 
-    vecApply,
-
     divVec, modVec
 ) where
 
@@ -12,16 +10,16 @@ data Vector a = Vector {xPos :: a, yPos :: a}
 
 type Coord = Vector Int
 
-vecApply :: Vector (a -> b) -> Vector a -> Vector b
-vecApply (Vector fx fy) (Vector x y) = Vector (fx x) (fy y)
-
 instance Functor Vector where
-    fmap   = vecApply . pure
+    fmap   = (<*>) . pure
     x <$ _ = pure x
 
 instance Applicative Vector where
     pure x  = Vector x x
-    liftA2 = (vecApply .) . fmap
+    
+    fv <*> v = Vector (fx x) (fy y)
+             where (Vector fx fy) = fv
+                   (Vector x  y ) = v
 
 instance Num a => Num (Vector a) where
     -- Binary Num Functions
