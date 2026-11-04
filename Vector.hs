@@ -36,7 +36,7 @@ instance Num a => Num (Vector a) where
     signum = liftVec1 signum
 
     -- Special Case Function
-    fromInteger x = (fromInteger x, fromInteger x)
+    fromInteger = toVec . fromInteger
 
 -- Special mod and div functions and coord cannot be an integral
 divVec :: Integral a => Vector a -> Vector a -> Vector a
