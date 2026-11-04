@@ -43,11 +43,12 @@ backRankPiece c 7 = Just $ Piece c Rook
 backRankPiece _ _ = Nothing
 
 defaultPiece :: Coord -> Tile
-defaultPiece (Vector x 0) = backRankPiece White x
-defaultPiece (Vector _ 1) = Just $ Piece White Pawn
-defaultPiece (Vector x 7) = backRankPiece Black x
-defaultPiece (Vector _ 6) = Just $ Piece Black Pawn
-defaultPiece (Vector _ _) = Nothing
+defaultPiece p | y == 0    = backRankPiece White x
+               | y == 1    = Just $ Piece White Pawn
+               | y == 7    = backRankPiece Black x
+               | y == 6    = Just $ Piece Black Pawn
+               | otherwise = Nothing
+               where (Vector x y) = p
 
 makeCoords :: [Coord]
 makeCoords = [Vector x y |  y <- [0..7], x <- [0..7]]
