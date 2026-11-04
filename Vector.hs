@@ -6,15 +6,17 @@ module Vector(
     divVec, modVec
 ) where
 
-type Coord = (Int, Int)
+type Vector a = (a, a)
 
-liftVec1 :: (Int -> Int) -> Coord -> Coord
+type Coord = Vector Int
+
+liftVec1 :: (a -> a) -> Vector a -> Vector a
 liftVec1 f (x, y) = (f x, f y)
 
-liftVec2 :: (Int -> Int -> Int) -> Coord -> Coord -> Coord
+liftVec2 :: (a -> a -> a) -> Vector a -> Vector a -> Vector a
 liftVec2 f (x1, y1) (x2, y2) = (f x1 x2, f y1 y2)
 
-instance Num Coord where
+instance Num a => Num (Vector a) where
     -- Binary Num Functions
     (+) = liftVec2 (+)
     (-) = liftVec2 (-)
@@ -29,8 +31,8 @@ instance Num Coord where
     fromInteger x = (fromInteger x, fromInteger x)
 
 -- Special mod and div functions and coord cannot be an integral
-divVec :: Coord -> Coord -> Coord
+divVec :: Integral a => Vector a -> Vector a -> Vector a
 divVec = liftVec2 div
 
-modVec :: Coord -> Coord -> Coord
+modVec :: Integral a => Vector a -> Vector a -> Vector a
 modVec = liftVec2 mod
