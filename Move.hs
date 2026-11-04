@@ -47,10 +47,10 @@ isValidPawnMove b p1 p2 | c == White && y2 <= y1 = False                     -- 
                         | abs(x1 - x2) /= 1      = False                     -- If not moving directly forward, only move 1 tile in x-direction
                         | isEnPassant            = True                      -- Handle en-passant special case
                         | otherwise              = isOpposing b c p2         -- If going diagonal, piece must be of opposing color
-                        where (Vector x1 y1)   = p1
-                              (Vector x2 y2)   = p2
-                              Just (Piece c _) = getTile b p1
-                              isEnPassant      = isValidEnPassant b c p1 p2
+                        where (Vector x1 y1) = p1
+                              (Vector x2 y2) = p2
+                              c              = colorAt b p1
+                              isEnPassant    = isValidEnPassant b c p1 p2
 
 validPawnMoves :: Board -> Coord -> [Coord]
 validPawnMoves b p = filter (isValidPawnMove b p) [fp, dp, lp, rp]
