@@ -7,6 +7,7 @@ module Move(
 ) where
 import ChessUtils
 import Piece
+import Vector
 import Board
 
 addVec :: Coord -> Coord -> Coord

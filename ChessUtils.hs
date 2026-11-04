@@ -1,4 +1,5 @@
 module ChessUtils(if', chessToCoord) where
+import Vector
 import Board
 import Error
 

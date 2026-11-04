@@ -17,6 +17,7 @@ module Board(
   setPiece, movePiece
 ) where
 import Piece
+import Vector
 
 data Board = Board {
   grid        :: [Tile],
@@ -25,7 +26,6 @@ data Board = Board {
   rookMoved   :: ((Bool, Bool), (Bool, Bool)),
   pawnDoubled :: (Maybe Int, Maybe Int)
 }
-type Coord = (Int, Int)
 
 ------------------------
 -- Board Construction --
