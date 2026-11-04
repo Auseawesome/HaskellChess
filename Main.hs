@@ -35,7 +35,7 @@ moveNoCheck b = do (p1, p2) <- inputMove b
 moveLoop :: Board -> IO()
 moveLoop b = do putStrLn ("It is " ++ shows (turn b) "'s Turn\n")
                 if' (currentlyInCheck b) (putStrLn "You are in check!") (return ())
-                putStrLn $ displayBoard b
+                putStrLn $ show b
 
                 b' <- moveNoCheck b
 

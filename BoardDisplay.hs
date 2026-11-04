@@ -1,4 +1,4 @@
-module BoardDisplay(displayBoard) where
+module BoardDisplay() where
 import ChessUtils
 import Piece
 import PieceDisplay
@@ -53,3 +53,6 @@ displayBoard b = concat d8
                      d6 = surround [bufferLine]    d5      -- Adds extra buffer lines to the outsides
                      d7 = d6 ++ [dividingLine, headerLine] -- Adds a dividing line and file header at the bottom
                      d8 = map (++"\n")             d7      -- Adds new lines to the end of every line
+
+instance Show Board where
+      show = displayBoard
