@@ -1,7 +1,7 @@
 module Vector(
     Coord,
 
-    toVec, zipVec,
+    toVec, vecApply,
 
     liftVec1, liftVec2,
 
@@ -15,14 +15,14 @@ type Coord = Vector Int
 toVec :: a -> Vector a
 toVec x = (x, x)
 
-zipVec :: Vector (a -> b) -> Vector a -> Vector b
-zipVec (fx, fy) (x, y) = (fx x, fy y)
+vecApply :: Vector (a -> b) -> Vector a -> Vector b
+vecApply (fx, fy) (x, y) = (fx x, fy y)
 
 liftVec1 :: (a -> b) -> Vector a -> Vector b
-liftVec1 = zipVec . toVec
+liftVec1 = vecApply . toVec
 
 liftVec2 :: (a -> b -> c) -> Vector a -> Vector b -> Vector c
-liftVec2 = (zipVec .) . liftVec1
+liftVec2 = (vecApply .) . liftVec1
 
 instance Num a => Num (Vector a) where
     -- Binary Num Functions
