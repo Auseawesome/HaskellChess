@@ -67,14 +67,14 @@ moveNoCheck b = do let c  = turn b
                    (p1, p2) <- inputMove c b
                    let b' = makeMove c p1 p2 b
 
-                   if' (isCurrentPlayerInCheck b')
+                   if' (currentlyInCheck b')
                        (putStrLn "That move would leave you in check!" >> moveNoCheck b)
                        (return b')
 
 moveLoop :: Board -> IO()
 moveLoop b = do let c = turn b
                 putStrLn ("It is "++(show c)++"'s Turn\n")
-                if' (isPlayerInCheck c b) (putStrLn "You are in check!") (return ())
+                if' (currentlyInCheck b) (putStrLn "You are in check!") (return ())
                 putStrLn $ displayBoard b
 
                 b' <- moveNoCheck b
