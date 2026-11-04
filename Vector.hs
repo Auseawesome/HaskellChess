@@ -1,6 +1,8 @@
 module Vector(
     Coord,
 
+    liftVec1, liftVec2,
+
     addVec, subVec
 ) where
 
@@ -17,3 +19,4 @@ addVec = liftVec2 (+)
 
 subVec :: Coord -> Coord -> Coord
 subVec = liftVec2 (-)
+
