@@ -25,5 +25,13 @@ switchColor Black = White
 tileColor :: Tile -> Color
 tileColor (Just p) = color p
 
+tileColor' :: Tile -> Maybe Color
+tileColor' t = do p <- t
+                  return $ color p
+
 tileType :: Tile -> PieceType
 tileType (Just p) = pieceType p
+
+tileType' :: Tile -> Maybe PieceType
+tileType' t = do p <- t
+                 return $ pieceType p
