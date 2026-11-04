@@ -84,7 +84,7 @@ moveLoop :: Color -> Board -> IO()
 moveLoop c b = do
             putStrLn ("It is "++(show c)++"'s Turn\n")
             if' (isPlayerInCheck c b) (putStrLn "You are in check!") (return ())
-            putStrLn $ displayBoard b
+            putStrLn $ displayBoard b c
 
             b' <- moveNoCheck c b
 
