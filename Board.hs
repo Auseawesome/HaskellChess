@@ -107,7 +107,7 @@ hasRookMoved b c x | x == 0    = d1
                    where (d1, d2) = boardColorData (rookMoved b) c
 
 hasPawnDoubled :: Board -> Color -> Coord -> Bool
-hasPawnDoubled b c (Vector x _) = boardColorData (pawnDoubled b) c == Just x
+hasPawnDoubled b c p = boardColorData (pawnDoubled b) c == Just (xPos p)
 
 -------------------
 -- State Setters --
