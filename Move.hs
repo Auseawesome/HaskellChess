@@ -112,8 +112,8 @@ updateKingFlags c King = flagKingMoved c
 updateKingFlags _ _    = id
 
 updateRookFlags :: Color -> PieceType -> Coord -> Board -> Board
-updateRookFlags c Rook (Vector x _) = flagRookMoved c x
-updateRookFlags _ _    _            = id
+updateRookFlags c Rook p = flagRookMoved c $ xPos p
+updateRookFlags _ _    _ = id
 
 updatePawnFlags :: Color -> PieceType -> Coord -> Coord -> Board -> Board
 updatePawnFlags c Pawn p1 p2 | abs dy < 2 = clearPawnDoubled
