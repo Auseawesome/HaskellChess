@@ -9,8 +9,8 @@ import Error
 
 -- Converts a chess-tile string to a coordinate, returning a string error if it isn't valid
 chessToCoord :: String -> OrError Coord
-chessToCoord ""       = Left  "An empty string is not a valid coordinate."
-chessToCoord (c:"")   = Left  (c:" is not a valid coordinate.")
+chessToCoord ""       = Left "An empty string is not a valid coordinate."
+chessToCoord (c:"")   = Left (c:" is not a valid coordinate.")
 chessToCoord (x:y:"") = do x' <- charToFile x
                            y' <- charToRank y
 
@@ -19,7 +19,7 @@ chessToCoord (x:y:"") = do x' <- charToFile x
                            if' (onBoard p)
                                (return p)
                                (Left "That position is not on the board!")
-chessToCoord s        = Left  $ (shows s) " is not a valid coordinate."
+chessToCoord s        = Left $ shows s " is not a valid coordinate."
 
 -- Converts a character to a file number, returning a string error if it isn't valid
 charToFile :: Char -> OrError Int
