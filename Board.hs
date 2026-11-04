@@ -140,7 +140,7 @@ clearPawnDoubled b =  b {pawnDoubled = (Nothing, Nothing)}
 --------------------
 
 onBoard :: Coord -> Bool
-onBoard (Vector x y) = x >= 0 && y >= 0 && x < 8 && y < 8
+onBoard = inBounds (pure 0) (pure 8)
 
 getPiece :: Board -> Coord -> Tile
 getPiece b p = do p' <- validIndex p
