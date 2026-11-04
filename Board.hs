@@ -12,7 +12,7 @@ module Board(
 
   onBoard, getPiece,
   isEmpty, isAlly, isOpposing,
-  findInBoard,
+  findInBoard, findKing,
 
   setPiece, movePiece
 ) where
@@ -161,6 +161,10 @@ isOpposing b c1 p | isEmpty b p = False
 findInBoard :: (Tile -> Bool) -> Board -> Maybe Coord
 findInBoard f b = do i <- findInGrid f 0 $ grid b
                      return $ indexToCoord i
+
+findKing :: Board -> Color -> Coord
+findKing b c = p
+             where Just p = findInBoard (== Just (Piece c King)) b -- Assumes king must be present, should always be safe
 
 -------------------
 -- Piece Setters --
