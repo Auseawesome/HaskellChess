@@ -13,7 +13,7 @@ data PieceType = Pawn | Bishop | Knight | Rook | Queen | King
 data Color = White | Black
     deriving (Show, Eq)
 
-data Piece = Piece { color :: Color, piece_type  :: PieceType }
+data Piece = Piece { color :: Color, pieceType :: PieceType }
     deriving (Show, Eq)
 
 type Tile = Maybe Piece
@@ -26,4 +26,4 @@ tileColor :: Tile -> Color
 tileColor (Just p) = color p
 
 tileType :: Tile -> PieceType
-tileType (Just p) = piece_type p
+tileType (Just p) = pieceType p
