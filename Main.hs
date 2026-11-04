@@ -13,7 +13,7 @@ inputCoord msg = do
               p <- getLine
               let p' = chessToCoord p
 
-              returnOrRetry (inputCoord msg) p'
+              retryOrReturn (inputCoord msg) p'
 
 inputMove :: Board -> IO (Coord, Coord)
 inputMove b = do p1 <- inputCoord "Input the position of the piece you want to move (eg. d2): "

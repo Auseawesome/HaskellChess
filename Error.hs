@@ -1,11 +1,11 @@
-module Error(OrError, returnOrRetry, isErr, errLn, noErr) where
+module Error(OrError, retryOrReturn, isErr, errLn, noErr) where
 
 type OrError = Either String
 
 -- On error, takes action to retry and retries after printing the error
-returnOrRetry :: IO a -> OrError a -> IO a
-returnOrRetry _ (Right x) = return x
-returnOrRetry m (Left  e) = putStrLn e >> m
+retryOrReturn :: IO a -> OrError a -> IO a
+retryOrReturn _ (Right x) = return x
+retryOrReturn m (Left  e) = putStrLn e >> m
 
 -- Check if something is an error
 isErr :: OrError a -> Bool
