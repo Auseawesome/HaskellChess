@@ -1,7 +1,9 @@
 module Vector(
     Coord,
 
-    liftVec1, liftVec2
+    liftVec1, liftVec2,
+
+    divVec, modVec
 ) where
 
 type Coord = (Int, Int)
@@ -22,6 +24,13 @@ instance Num Coord where
     negate = liftVec1 negate
     abs    = liftVec1 negate
     signum = liftVec1 signum
-    
+
     -- Special Case Function
     fromInteger x = (fromInteger x, fromInteger x)
+
+-- Special mod and div functions and coord cannot be an integral
+divVec :: Coord -> Coord -> Coord
+divVec = liftVec2 div
+
+modVec :: Coord -> Coord -> Coord
+modVec = liftVec2 mod
