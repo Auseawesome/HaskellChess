@@ -15,6 +15,11 @@ emptyRaycast b v acc t | acc == t            = True
                        | not $ isEmpty b acc = False
                        | otherwise           = emptyRaycast b v (acc + v) t
 
+emptyRaycastList :: Board -> Coord -> Coord -> [Coord]
+emptyRaycastList b v acc | not $ onBoard acc   = []
+                         | not $ isEmpty b acc = []
+                         | otherwise           = acc : emptyRaycastList b v (acc + v)
+
 isValidPawnDouble :: Board -> Coord -> Coord -> Bool
 isValidPawnDouble b p1 p2 | y1 == y2           = False
                           | abs (y2 - y1) > 2  = False
