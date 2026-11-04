@@ -35,9 +35,9 @@ isValidEnPassant :: Board -> Color -> Coord -> Coord -> Bool
 isValidEnPassant b c p1 p2 | not (hasPawnDoubled b op p2) = False
                            | not (isEmpty b p2)           = False
                            | otherwise                    = isOpposing b c $ Vector x2 y1
-                           where (Vector _ y1) = p1
-                                 (Vector x2 _) = p2
-                                 op            = switchColor c
+                           where y1 = yPos p1
+                                 x2 = xPos p2
+                                 op = switchColor c
 
 isValidPawnMove :: MovePredicate
 isValidPawnMove b p1 p2 | c == White && y2 <= y1 = False                     -- White pawns can only move up in the y-direction
