@@ -70,15 +70,14 @@ findKing b c = p
 isPlayerInCheck :: Color -> Board -> Bool
 isPlayerInCheck c b = isInCheck b c $ findKing b c
 
-moveNoCheck :: Color -> Board -> IO Board
-moveNoCheck c b = do
-               (p1, p2) <- inputMove c b
+moveNoCheck :: Board -> IO Board
+moveNoCheck b = do let c  = turn b
+                   (p1, p2) <- inputMove c b
+                   let b' = makeMove c p1 p2 b
 
-               let b' = makeMove c p1 p2 b
-
-               if' (isPlayerInCheck c b')
-                   (putStrLn "That move would leave you in check!" >> moveNoCheck c b)
-                   (return b')
+                   if' (isPlayerInCheck c b')
+                       (putStrLn "That move would leave you in check!" >> moveNoCheck b)
+                       (return b')
 
 moveLoop :: Board -> IO()
 moveLoop b = do let c = turn b
@@ -86,7 +85,7 @@ moveLoop b = do let c = turn b
                 if' (isPlayerInCheck c b) (putStrLn "You are in check!") (return ())
                 putStrLn $ displayBoard b
 
-                b' <- moveNoCheck c b
+                b' <- moveNoCheck b
 
                 moveLoop $ nextTurn b'
 
