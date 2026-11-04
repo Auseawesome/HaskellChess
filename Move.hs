@@ -153,10 +153,11 @@ currentlyInCheck b = isInCheck (turn b) b
 
 makeMove :: Color -> Coord -> Coord -> Board -> Board
 makeMove c p1 p2 b | not valid   = b
-                   | isEnPassant = updateAllFlags c t p1 p2 $ enPassant p1 p2 b
-                   | isCastle    = updateAllFlags c t p1 p2 $ castle  c p1 p2 b
-                   | otherwise   = updateAllFlags c t p1 p2 $ movePiece p1 p2 b
+                   | isEnPassant = uaf $ enPassant p1 p2 b
+                   | isCastle    = uaf $ castle  c p1 p2 b
+                   | otherwise   = uaf $ movePiece p1 p2 b
                    where valid            = isValidMove b c p1 p2
                          Just (Piece _ t) = getPiece b p1
                          isEnPassant      = (t == Pawn) && (isValidEnPassant b c p1 p2)
                          isCastle         = (t == King) && (isValidCastle    b c p1 p2)
+                         uaf              = updateAllFlags c t p1 p2
