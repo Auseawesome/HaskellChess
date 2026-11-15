@@ -142,8 +142,10 @@ validNormalKingMoves b p = do dx <- [-1, 0, 1]
 
                               true <- return ((dx + dy) == 0)
 
-                              let p2 = Vector dx dy
-                              true <- return (onBoard p2)
+                              let c  = colorAt b p
+                              let p2 = p + Vector dx dy
+                              true  <- return $ onBoard p2
+                              false <- return $ isSpaceAttacked b c p2
 
                               return p2
 
