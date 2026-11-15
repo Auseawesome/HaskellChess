@@ -237,8 +237,59 @@ castle c p1 p2 b = movePiece rookOrigin rookPos $
                        rookOrigin   = p1 {xPos = rookSide}
                        rookPos      = p1 {xPos = x - signum dx}
 
+spaceAttackedByPawn :: Board -> Color -> Coord -> Bool
+spaceAttackedByPawn b c p = any id checks
+                          where checks = do dx <- [-1, 1]
+                                            dy <- [-1, 1]
+                                            let dp = Vector dx dy
+
+                                            true <- return $ (getTile b p == Just (Piece (switchColor c) Pawn))
+
+                                            return $ isValidPawnMove b p (p + dp)
+
+spaceAttackedByKing :: Board -> Color -> Coord -> Bool
+spaceAttackedByKing b c p = any id checks
+                          where checks = do dx <- [-1, 0, 1]
+                                            dy <- [-1, 0, 1]
+                                            let dp = Vector dx dy
+
+                                            return $ (getTile b p == Just (Piece (switchColor c) King))
+
+spaceAttackedByKnight :: Board -> Color -> Coord -> Bool
+spaceAttackedByKnight b c p = any knightPred $ validKnightMoves b p
+                            where knightPred = (== Just (Piece (switchColor c) Knight)).(getTile b)
+
+spaceAttackedStraight :: Board -> Color -> Coord -> Bool
+spaceAttackedStraight b c p = any id checks
+                            where checks = do s <- [-1, 1]
+                                              v <- [Vector 0 s, Vector s 0]
+                                              return $ attackerPred $ emptyRaycastPiece b v (p + v)
+                                  attackerPred :: Tile -> Bool
+                                  attackerPred t | t == Nothing = False
+                                                 | tt == Queen  = True
+                                                 | tt == Rook   = True
+                                                 | otherwise    = False
+                                                 where tt = tileType t
+
+spaceAttackedDiagonally :: Board -> Color -> Coord -> Bool
+spaceAttackedDiagonally b c p = any id checks
+                              where checks = do vx <- [-1, 1]
+                                                vy <- [-1, 1]
+                                                let v = Vector vx vy
+                                                return $ attackerPred $ emptyRaycastPiece b v (p + v)
+                                    attackerPred :: Tile -> Bool
+                                    attackerPred t | t == Nothing = False
+                                                   | tt == Queen  = True
+                                                   | tt == Bishop = True
+                                                   | otherwise    = False
+                                                   where tt = tileType t
+
 isSpaceAttacked :: Board -> Color -> Coord -> Bool
-isSpaceAttacked b c p2 = any (\p1 -> isValidMove b (switchColor c) p1 p2) makeCoords
+isSpaceAttacked b c p = spaceAttackedByPawn     b c p
+                     || spaceAttackedByKing     b c p
+                     || spaceAttackedByKnight   b c p
+                     || spaceAttackedStraight   b c p
+                     || spaceAttackedDiagonally b c p
 
 isInCheck :: Color -> Board -> Bool
 isInCheck c b = isSpaceAttacked b c $ findKing b c
