@@ -252,4 +252,4 @@ pieceCanMove b p = [] /= validMoves b p
 
 anyMovesLeft :: Color -> Board -> Bool
 anyMovesLeft c b = any (pieceCanMove b) op
-                 where op = findAllInBoard (\t -> t == Nothing || tileColor t == c) b
+                 where op = findAllInBoard (\t -> t /= Nothing && tileColor t == c) b
