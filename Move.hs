@@ -96,6 +96,11 @@ isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (p1 + v) p2
                         where (Vector dx dy) = p2 - p1
                               v              = (Vector (signum dx) (signum dy))
 
+validRookMoves :: MoveLister
+validRookMoves b p = do s <- [-1, 1]
+                        v <- [Vector 0 s, Vector s 0]
+                        emptyRaycastList b v p
+
 isValidQueenMove :: MovePredicate
 isValidQueenMove b p1 p2 = isValidBishopMove b p1 p2 || isValidRookMove b p1 p2
 
