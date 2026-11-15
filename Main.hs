@@ -1,9 +1,7 @@
 module Main(main) where
 import ChessUtils
-import Piece
-import PieceDisplay
 import Board
-import BoardDisplay
+import BoardDisplay -- BoardDisplay contains Show instance for Board
 import Move
 import Error
 
