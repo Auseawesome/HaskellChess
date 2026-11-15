@@ -1,5 +1,5 @@
 module Move(
-      isValidMove,
+      validMoves, isValidMove,
       makeMove,
 
       isSpaceAttacked,
