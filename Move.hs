@@ -104,6 +104,9 @@ validRookMoves b p = do s <- [-1, 1]
 isValidQueenMove :: MovePredicate
 isValidQueenMove b p1 p2 = isValidBishopMove b p1 p2 || isValidRookMove b p1 p2
 
+validQueenMoves :: MoveLister
+validQueenMoves b p = validBishopMoves b p ++ validRookMoves b p
+
 -- TODO: Stop castling through check
 isValidCastle :: MovePredicate
 isValidCastle b p1 p2 | dy /= 0                   = False
