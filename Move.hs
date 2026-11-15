@@ -161,6 +161,20 @@ isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of 
                                           Queen  -> isValidQueenMove
                                           King   -> isValidKingMove
 
+validMoves :: MoveLister
+validMoves b p | not (onBoard p) = []
+               | empty           = []
+               | otherwise       = ml b p
+               where tile  = getTile b p
+                     empty = tile == Nothing
+                     ml    = case tileType tile of
+                                  Pawn   -> validPawnMoves
+                                  Bishop -> validBishopMoves
+                                  Knight -> validKnightMoves
+                                  Rook   -> validRookMoves
+                                  Queen  -> validQueenMoves
+                                  King   -> validKingMoves
+
 updateKingFlags :: Color -> PieceType -> Board -> Board
 updateKingFlags c King = flagKingMoved c
 updateKingFlags _ _    = id
