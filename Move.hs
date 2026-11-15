@@ -5,7 +5,9 @@ module Move(
       isSpaceAttacked,
       isInCheck, currentlyInCheck,
 
-      pieceCanMove, anyMovesLeft
+      pieceCanMove, anyMovesLeft,
+
+      moveCausesCheck
 ) where
 import ChessUtils
 import Piece
@@ -251,3 +253,6 @@ pieceCanMove b p = [] /= validMoves b p
 anyMovesLeft :: Color -> Board -> Bool
 anyMovesLeft c b = any (pieceCanMove b) op
                  where op = findAllInBoard (\t -> t /= Nothing && tileColor t == c) b
+
+moveCausesCheck :: Board -> Color -> Coord -> Coord -> Bool
+moveCausesCheck b c p1 p2 = isInCheck c (makeMove c p1 p2 b)
