@@ -130,6 +130,18 @@ isValidKingMove b p1 p2 | validCastle = True
                         where Vector dx dy = p2 - p1
                               validCastle  = isValidCastle b p1 p2
 
+validNormalKingMoves :: MoveLister
+validNormalKingMoves b p = do dx <- [-1, 0, 1]
+                              dy <- [-1, 0, 1]
+                              true <- return ((dx + dy) == 0)
+                              return $ Vector dx dy
+
+validKingMoves :: MoveLister
+validKingMoves b p = filter (isValidCastle b p) [l, r] ++ 
+                     validNormalKingMoves  b p
+                   where l = p {xPos = 2}
+                         r = p {xPos = 6}
+
 isValidMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of the board
                        | not (onBoard p2) = False -- Can't move out of the board
