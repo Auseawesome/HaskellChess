@@ -3,7 +3,9 @@ module Move(
       makeMove,
 
       isSpaceAttacked,
-      isInCheck, currentlyInCheck
+      isInCheck, currentlyInCheck,
+
+      pieceCanMove, anyMovesLeft
 ) where
 import ChessUtils
 import Piece
@@ -239,3 +241,10 @@ makeMove c p1 p2 b | not valid   = b
                          isEnPassant = (t == Pawn) && (isValidEnPassant b c p1 p2)
                          isCastle    = (t == King) && (isValidCastle    b   p1 p2)
                          uaf         = updateAllFlags c t p1 p2
+
+pieceCanMove :: Board -> Coord -> Bool
+pieceCanMove b p = [] /= validMoves b p
+
+anyMovesLeft :: Color -> Board -> Bool
+anyMovesLeft c b = any (pieceCanMove b) op
+                 where op = findAllInBoard (\t -> t == Nothing || tileColor t == c) b
