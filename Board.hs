@@ -163,7 +163,7 @@ isEmpty b p = getTile b p == Nothing
 
 isAlly :: Board -> Color -> Coord -> Bool
 isAlly b c1 p | isEmpty b p = False
-              | otherwise = c1 == c2
+              | otherwise   = c1 == c2
               where (Just (Piece c2 _)) = getTile b p
 
 isOpposing :: Board -> Color -> Coord -> Bool
