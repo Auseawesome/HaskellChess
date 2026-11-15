@@ -55,7 +55,7 @@ isValidPawnMove b p1 p2 | c == White && y2 <= y1 = False                     -- 
                               isEnPassant    = isValidEnPassant b c p1 p2
 
 validPawnMoves :: MoveLister
-validPawnMoves b p = filter (isValidPawnMove b p) [fp, dp, lp, rp]
+validPawnMoves b p = filter (isValidMove b c p) [fp, dp, lp, rp]
                    where Just (Piece c _) = getTile b p
                          fw               = if' (c == White) 1 (-1)
                          fp               = p  + (Vector 0   fw)
@@ -88,7 +88,11 @@ validKnightMoves b p = do ax <- [1 , 2]
                           my <- [-1 ,1]
                           let vx = ax       * mx
                           let vy = (3 - ax) * my
-                          return $ Vector vx vy
+
+                          let p2 = Vector vx vy
+                          true <- return (onBoard p2)
+
+                          return p2
 
 isValidRookMove :: MovePredicate
 isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (p1 + v) p2
@@ -133,8 +137,13 @@ isValidKingMove b p1 p2 | validCastle = True
 validNormalKingMoves :: MoveLister
 validNormalKingMoves b p = do dx <- [-1, 0, 1]
                               dy <- [-1, 0, 1]
+
                               true <- return ((dx + dy) == 0)
-                              return $ Vector dx dy
+
+                              let p2 = Vector dx dy
+                              true <- return (onBoard p2)
+
+                              return p2
 
 validKingMoves :: MoveLister
 validKingMoves b p = filter (isValidCastle b p) [l, r] ++ 
