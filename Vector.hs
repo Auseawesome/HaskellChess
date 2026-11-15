@@ -19,6 +19,9 @@ inBounds l h p = x >= lx && y >= ly && x < hx && y < hy
                      Vector hx hy = h
                      Vector x  y  = p
 
+instance Show a => Show (Vector a) where
+    show (Vector x y)= "v(" ++ shows x (", " ++ shows y ")")
+
 instance Functor Vector where
     fmap   = (<*>) . pure
     x <$ _ = pure x
