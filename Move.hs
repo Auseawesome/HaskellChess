@@ -82,6 +82,14 @@ isValidKnightMove _ p1 p2 | dx == 0                  = False
                           | otherwise                = False
                           where (Vector dx dy) = p2 - p1
 
+validKnightMoves :: MoveLister
+validKnightMoves b p = do ax <- [1 , 2]
+                          mx <- [-1, 1]
+                          my <- [-1 ,1]
+                          let vx = ax       * mx
+                          let vy = (3 - ax) * my
+                          return $ Vector vx vy
+
 isValidRookMove :: MovePredicate
 isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (p1 + v) p2
                         | otherwise          = False
