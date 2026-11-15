@@ -91,10 +91,7 @@ validKnightMoves b p = do ax <- [1 , 2]
                           let vx = ax       * mx
                           let vy = (3 - ax) * my
 
-                          let p2 = p + Vector vx vy
-                          true <- return (onBoard p2)
-
-                          return p2
+                          return $ p + Vector vx vy
 
 isValidRookMove :: MovePredicate
 isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (p1 + v) p2
@@ -144,7 +141,6 @@ validNormalKingMoves b p = do dx <- [-1, 0, 1]
 
                               let c  = colorAt b p
                               let p2 = p + Vector dx dy
-                              true  <- return $ onBoard p2
                               false <- return $ isSpaceAttacked b c p2
 
                               return p2
@@ -155,17 +151,23 @@ validKingMoves b p = filter (isValidCastle b p) [l, r] ++
                    where l = p {xPos = 2}
                          r = p {xPos = 6}
 
+genericMoveValid :: Board -> Color -> Coord -> Coord -> Bool
+genericMoveValid b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of the board
+                           | not (onBoard p2) = False -- Can't move out of the board
+                           | p1 == p2         = False -- Can't move to the same tile that you start on
+                           | empty            = False -- Can't move an empty tile
+                           | c1 /= c2         = False -- Can't move a piece of opposing colour
+                           | isAlly b c1 p2   = False -- Can't take piece of your own colour
+                           | otherwise        = True
+                           where tile  = getTile b p1
+                                 empty = tile == Nothing
+                                 c2    = tileColor tile
+
 isValidMove :: Board -> Color -> Coord -> Coord -> Bool
-isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of the board
-                       | not (onBoard p2) = False -- Can't move out of the board
-                       | p1 == p2         = False -- Can't move to the same tile that you start on
-                       | empty            = False -- Can't move an empty tile
-                       | c1 /= c2         = False -- Can't move a piece of opposing colour
-                       | isAlly b c1 p2   = False -- Can't take piece of your own colour
-                       | otherwise        = mf b p1 p2
+isValidMove b c1 p1 p2 = genericMoveValid b c1 p1 p2 && mf b p1 p2
                        where tile  = getTile b p1
                              empty = tile == Nothing
-                             c2    = tileColor tile
+                             c2    = colorAt b p2
                              mf    = case tileType tile of
                                           Pawn   -> isValidPawnMove
                                           Bishop -> isValidBishopMove
@@ -177,9 +179,10 @@ isValidMove b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outside of 
 validMoves :: MoveLister
 validMoves b p | not (onBoard p) = []
                | empty           = []
-               | otherwise       = ml b p
+               | otherwise       = filter (genericMoveValid b c p) $ ml b p
                where tile  = getTile b p
                      empty = tile == Nothing
+                     c     = tileColor tile
                      ml    = case tileType tile of
                                   Pawn   -> validPawnMoves
                                   Bishop -> validBishopMoves
