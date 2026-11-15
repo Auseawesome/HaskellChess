@@ -4,7 +4,7 @@ module Vector(
 
     inBounds,
 
-    divVec, modVec
+    divVec, modVec, modVecInt
 ) where
 
 data Vector a = Vector {xPos :: a, yPos :: a}
@@ -53,3 +53,9 @@ divVec = liftA2 div
 
 modVec :: Integral a => Vector a -> Vector a -> Vector a
 modVec = liftA2 mod
+
+modVecInt :: Integral a => Vector a -> Vector a -> a
+modVecInt (Vector _ y1) (Vector 0 y2) = mod y1 y2
+modVecInt (Vector x1 _) (Vector x2 0) = mod x1 x2
+modVecInt v1            v2            = min (xPos vecMod) (yPos vecMod)
+                                      where vecMod = modVec v1 v2
