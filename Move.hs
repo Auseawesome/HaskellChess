@@ -83,7 +83,8 @@ isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
 validBishopMoves :: MoveLister
 validBishopMoves b p = do vx <- [-1, 1]
                           vy <- [-1, 1]
-                          emptyRaycastList b (Vector vx vy) p
+                          let v = Vector vx vy
+                          emptyRaycastList b v (p + v)
 
 isValidKnightMove :: MovePredicate
 isValidKnightMove _ p1 p2 | dx == 0                  = False
@@ -110,7 +111,7 @@ isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (p1 + v) p2
 validRookMoves :: MoveLister
 validRookMoves b p = do s <- [-1, 1]
                         v <- [Vector 0 s, Vector s 0]
-                        emptyRaycastList b v p
+                        emptyRaycastList b v (p + v)
 
 isValidQueenMove :: MovePredicate
 isValidQueenMove b p1 p2 = isValidBishopMove b p1 p2 || isValidRookMove b p1 p2
