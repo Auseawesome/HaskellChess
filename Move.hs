@@ -28,6 +28,12 @@ emptyRaycastList b v acc | not $ onBoard acc   = []
                          | not $ isEmpty b acc = []
                          | otherwise           = acc : emptyRaycastList b v (acc + v)
 
+emptyRaycastPiece :: Board -> Coord -> Coord -> Tile
+emptyRaycastPiece b v acc | not $ onBoard acc   = Nothing
+                          | not $ isEmpty b acc = getTile b acc
+                          | otherwise           = emptyRaycastPiece b v (acc + v)
+
+
 isValidPawnDouble :: MovePredicate
 isValidPawnDouble b p1 p2 | y1 == y2           = False
                           | abs (y2 - y1) > 2  = False
@@ -255,4 +261,23 @@ anyMovesLeft c b = any (pieceCanMove b) op
                  where op = findAllInBoard (\t -> t /= Nothing && tileColor t == c) b
 
 moveCausesCheck :: Board -> Color -> Coord -> Coord -> Bool
-moveCausesCheck b c p1 p2 = isInCheck c (makeMove c p1 p2 b)
+moveCausesCheck b c p1 p2 | not straight && not diagonal = False -- If there isn't a straight line between moved piece and king, can't cause check
+                          | kv == mv                     = False -- If piece moved along line between it and king, can't cause check
+                          | threatenPiece  == Nothing    = False -- If no piece is behind the moved piece, can't cause check
+                          | threatenColor  == c          = False -- Can't be threatened by your own piece
+                          | threatenType   == Queen      = True  -- Queen can threaten either diagonally or straight
+                          | straightThreat               = True  -- Threat from a rook
+                          | diagonalThreat               = True  -- Threat from a bishop
+                          | otherwise                    = False -- Not threatening piece (Knight, pawn etc.)
+                          where kp             = findKing b c
+                                Vector dkx dky = p1 - kp
+                                straight       = dkx == 0 || dky == 0
+                                diagonal       = abs dkx == abs dky
+                                kv             = Vector (signum dkx) (signum dky)
+                                mv             = Vector (signum dpx) (signum dpy)
+                                Vector dpx dpy = p2 - p1
+                                threatenPiece  = emptyRaycastPiece b kv (p1 + kv)
+                                threatenType   = tileType  threatenPiece
+                                threatenColor  = tileColor threatenPiece
+                                straightThreat = straight && threatenType == Rook
+                                diagonalThreat = diagonal && threatenType == Bishop
