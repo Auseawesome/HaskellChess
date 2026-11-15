@@ -44,7 +44,7 @@ instance Num a => Num (Vector a) where
     -- Special Case Function
     fromInteger = pure . fromInteger
 
--- Special mod and div functions and coord cannot be an integral
+-- Special mod and div functions as a vector cannot be an integral
 divVec :: Integral a => Vector a -> Vector a -> Vector a
 divVec = liftA2 div
 
