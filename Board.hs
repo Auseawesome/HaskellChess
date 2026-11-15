@@ -12,7 +12,7 @@ module Board(
 
   onBoard, getTile,
   isEmpty, isAlly, isOpposing,
-  findInBoard, findKing,
+  findInBoard, findAllInBoard, findKing,
 
   colorAt, colorAt',
   typeAt, typeAt',
@@ -97,6 +97,14 @@ findInGrid _ _ []     = Nothing
 findInGrid f a (x:xs) | f x       = Just a
                       | otherwise = findInGrid f (a+1) xs 
 
+-- Use a tile predicate to find the indexs of all matching tiles in the board grid
+-- See 'findAllInBoard' for getting coordinates
+findAllInGrid :: (Tile -> Bool) -> Int -> [Tile] -> [Int]
+findAllInGrid _ a []     = []
+findAllInGrid f a (x:xs) | f x       = a : rest
+                         | otherwise =     rest
+                         where rest = findAllInGrid f (a+1) xs
+
 -------------------
 -- State Getters --
 -------------------
@@ -166,6 +174,9 @@ isOpposing b c1 p | isEmpty b p = False
 findInBoard :: (Tile -> Bool) -> Board -> Maybe Coord
 findInBoard f b = do i <- findInGrid f 0 $ grid b
                      return $ indexToCoord i
+
+findAllInBoard :: (Tile -> Bool) -> Board -> [Coord]
+findAllInBoard f b = do map indexToCoord $ findAllInGrid f 0 $ grid b
 
 findKing :: Board -> Color -> Coord
 findKing b c = p
