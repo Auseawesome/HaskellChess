@@ -31,13 +31,18 @@ moveNoCheck b = do (p1, p2) <- inputMove b
                        (return b')
 
 moveLoop :: Board -> IO()
-moveLoop b = do putStrLn ("It is " ++ shows (turn b) "'s Turn\n")
-                if' (currentlyInCheck b) (putStrLn "You are in check!") (return ())
-                putStrLn $ show b
+moveLoop b = do let c = turn b
+                let inCheck   = currentlyInCheck b
+                let movesLeft = anyMovesLeft c   b
 
-                b' <- moveNoCheck b
+                if (not movesLeft)
+                then do if' inCheck (putStrLn ("Checkmate, " ++ shows c "Wins!")) (putStrLn "Stalemate, the game ends in a draw!")
+                else do putStrLn ("It is " ++ shows c "'s Turn\n")
+                        if' inCheck (putStrLn "You are in check!") (return ())
+                        print b
 
-                moveLoop $ nextTurn b'
+                        b' <- moveNoCheck b
+                        moveLoop $ nextTurn b'
 
 main :: IO()
 main = do
