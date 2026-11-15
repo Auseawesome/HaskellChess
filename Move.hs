@@ -91,7 +91,7 @@ validKnightMoves b p = do ax <- [1 , 2]
                           let vx = ax       * mx
                           let vy = (3 - ax) * my
 
-                          let p2 = Vector vx vy
+                          let p2 = p + Vector vx vy
                           true <- return (onBoard p2)
 
                           return p2
