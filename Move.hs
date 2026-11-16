@@ -101,12 +101,6 @@ validKnightMoves b p = do ax <- [1 , 2]
 
                           return $ p + Vector vx vy
 
-isValidRookMove :: MovePredicate
-isValidRookMove b p1 p2 | dx == 0 || dy == 0 = emptyRaycast b v (p1 + v) p2
-                        | otherwise          = False
-                        where (Vector dx dy) = p2 - p1
-                              v              = (Vector (signum dx) (signum dy))
-
 validRookMoves :: MoveLister
 validRookMoves b p = do s <- [-1, 1]
                         v <- [Vector 0 s, Vector s 0]
