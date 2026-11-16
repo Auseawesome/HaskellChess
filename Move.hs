@@ -112,9 +112,6 @@ validRookMoves b p = do s <- [-1, 1]
                         v <- [Vector 0 s, Vector s 0]
                         emptyRaycastList b v (p + v)
 
-isValidQueenMove :: MovePredicate
-isValidQueenMove b p1 p2 = isValidBishopMove b p1 p2 || isValidRookMove b p1 p2
-
 validQueenMoves :: MoveLister
 validQueenMoves b p = validBishopMoves b p ++ validRookMoves b p
 
