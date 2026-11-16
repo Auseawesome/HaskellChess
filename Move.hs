@@ -133,14 +133,6 @@ isValidCastle b p1 p2 | dy /= 0                   = False
                             v                = Vector (signum dx) 0
                             empty            = emptyRaycast b v (p1 + v) rookPos
 
-isValidKingMove :: MovePredicate
-isValidKingMove b p1 p2 | validCastle = True
-                        | abs dx > 1  = False
-                        | abs dy > 1  = False
-                        | otherwise   = True
-                        where Vector dx dy = p2 - p1
-                              validCastle  = isValidCastle b p1 p2
-
 validNormalKingMoves :: MoveLister
 validNormalKingMoves b p = do dx <- [-1, 0, 1]
                               dy <- [-1, 0, 1]
