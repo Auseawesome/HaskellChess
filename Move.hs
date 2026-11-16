@@ -224,12 +224,10 @@ castle c p1 p2 b = movePiece rookOrigin rookPos $
 spaceAttackedByPawn :: Board -> Color -> Coord -> Bool
 spaceAttackedByPawn b c p = any id checks
                           where checks = do dx <- [-1, 1]
-                                            dy <- [-1, 1]
+                                            let dy = getPawnDir c
                                             let dp = Vector dx dy
 
-                                            true <- return $ (getTile b p == Just (Piece (switchColor c) Pawn))
-
-                                            return $ isValidPawnMove b p (p + dp)
+                                            return $ (getTile b (p + dp) == Just (Piece (switchColor c) Pawn))
 
 spaceAttackedByKing :: Board -> Color -> Coord -> Bool
 spaceAttackedByKing b c p = any id checks
