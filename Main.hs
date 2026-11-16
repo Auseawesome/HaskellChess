@@ -28,7 +28,7 @@ moveLoop b = do let c = turn b
                 let movesLeft = anyMovesLeft c   b
 
                 if (not movesLeft)
-                then do if' inCheck (putStrLn ("Checkmate, " ++ shows c "Wins!")) (putStrLn "Stalemate, the game ends in a draw!")
+                then do if' inCheck (putStrLn ("Checkmate, " ++ shows c " Wins!")) (putStrLn "Stalemate, the game ends in a draw!")
                 else do putStrLn ("It is " ++ shows c "'s Turn\n")
                         if' inCheck (putStrLn "You are in check!") (return ())
                         print b
