@@ -169,12 +169,15 @@ genericMoveValid b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outsid
                             | c1 /= c2         = False -- Can't move a piece of opposing colour
                             | isAlly b c1 p2   = False -- Can't take piece of your own colour
                             | cc               = False -- Can't do a move which causes check
+                            | ic               = False -- If in check, can't make a move which doesn't resolve check
                             | otherwise        = True
                             where tile  = getTile b p1
                                   empty = tile == Nothing
                                   tt    = tileType tile
                                   c2    = tileColor tile
                                   cc    = moveCausesCheck b c1 p1 p2
+                                  b'    = makeMove c1 p1 p2 b
+                                  ic    = isInCheck c1 b && isInCheck c1 b'
 
 isValidMove :: Board -> Color -> Coord -> Coord -> Bool
 isValidMove b c1 p1 p2 = genericMoveValid b c1 p1 p2 && mf b p1 p2
