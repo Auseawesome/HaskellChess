@@ -1,6 +1,5 @@
 module Move(
-      validMoves, isValidMove,
-      makeMove,
+      validMoves, makeMove,
 
       isSpaceAttacked,
       isInCheck, currentlyInCheck,
@@ -65,7 +64,7 @@ isValidPawnMove b p1 p2 | c == White && y2 <= y1 = False                     -- 
                               isEnPassant    = isValidEnPassant b c p1 p2
 
 validPawnMoves :: MoveLister
-validPawnMoves b p = filter (isValidMove b c p) [fp, dp, lp, rp]
+validPawnMoves b p = filter (isValidPawnMove b p) [fp, dp, lp, rp]
                    where Just (Piece c _) = getTile b p
                          fw               = if' (c == White) 1 (-1)
                          fp               = p  + (Vector 0   fw)
@@ -178,19 +177,6 @@ genericMoveValid b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outsid
                                   cc    = moveCausesCheck b c1 p1 p2
                                   b'    = makeMove c1 p1 p2 b
                                   ic    = isInCheck c1 b && isInCheck c1 b'
-
-isValidMove :: Board -> Color -> Coord -> Coord -> Bool
-isValidMove b c1 p1 p2 = genericMoveValid b c1 p1 p2 && mf b p1 p2
-                       where tile  = getTile b p1
-                             empty = tile == Nothing
-                             c2    = colorAt b p2
-                             mf    = case tileType tile of
-                                          Pawn   -> isValidPawnMove
-                                          Bishop -> isValidBishopMove
-                                          Knight -> isValidKnightMove
-                                          Rook   -> isValidRookMove
-                                          Queen  -> isValidQueenMove
-                                          King   -> isValidKingMove
 
 validMoves :: MoveLister
 validMoves b p | not (onBoard p) = []
