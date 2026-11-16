@@ -35,8 +35,8 @@ numberRows i (x:xs) = ((show i)++" |"++x):(numberRows (i+1) xs)
 headerLine :: String
 headerLine = h5
            where h1 = ['a'..'h']           -- Generates header letters for board, ranging from a to h
-                 h2 = map (: "   ")    h1  -- Pads the letters with three spaces afterwards
-                 h3 = map ("  " ++)     h2 -- Adds two extra spaces to the start to fit even width
+                 h2 = map (: "   ")   h1   -- Pads the letters with three spaces afterwards
+                 h3 = map ("  " ++)   h2   -- Adds two extra spaces to the start to fit even width
                  h4 = intercalate "|" h3   -- Inserts dividing lines between the letters
                  h5 = "  |" ++        h4   -- Prepends a column for the row numbers
 
@@ -45,14 +45,14 @@ displayBoard :: Board -> String
 displayBoard b = concat d8
                where c  = turn b
                      ch = chunk 8 $ grid b                 -- Chunks the board into a list of rows
-                     d1 = map displayLine          ch      -- Applies displayLine to each row to add padding and dividing vertical lines
-                     d2 = numberRows 1             d1      -- Adds the row numbers
+                     d1 = map displayLine               ch -- Applies displayLine to each row to add padding and dividing vertical lines
+                     d2 = numberRows 1                  d1 -- Adds the row numbers
                      d3 = if' (c == White) (reverse d2) d2 -- Flip board so white is at bottom on white's turn
-                     d4 = intersperse dividingLine d3      -- Adds dividing horizontal lines to each row
-                     d5 = intersperse bufferLine   d4      -- Adds buffer lines between each row and divider
-                     d6 = surround [bufferLine]    d5      -- Adds extra buffer lines to the outsides
+                     d4 = intersperse dividingLine      d3 -- Adds dividing horizontal lines to each row
+                     d5 = intersperse bufferLine        d4 -- Adds buffer lines between each row and divider
+                     d6 = surround [bufferLine]         d5 -- Adds extra buffer lines to the outsides
                      d7 = d6 ++ [dividingLine, headerLine] -- Adds a dividing line and file header at the bottom
-                     d8 = map (++"\n")             d7      -- Adds new lines to the end of every line
+                     d8 = map (++"\n")                  d7 -- Adds new lines to the end of every line
 
 instance Show Board where
       show = displayBoard
