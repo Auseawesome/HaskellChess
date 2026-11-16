@@ -13,15 +13,26 @@ inputCoord msg = do
 
               retryOrReturn (inputCoord msg) p'
 
+printInputError :: Bool -> Bool -> IO ()
+printInputError pe vc = do let nm = not pe && vc -- It has errored, if not either empty error or wrong color, must be no moves
+
+                           if' nm
+                               (putStrLn "There area no possible moves with that piece, please try another one!")
+                               $ if' pe
+                                     (putStrLn "You cannot move a non-existent piece!")
+                                     (putStrLn "You cannot move your opponent's piece!")
+
+
 inputFirstCoord :: Board -> IO (Coord, [Coord])
 inputFirstCoord b = do p <- inputCoord "Input the position of the piece you want to move (eg. d2): "
                        
-                       let pieceValid = getTile b p /= Nothing && colorAt b p == turn b
+                       let pe = getTile b p == Nothing
+                       let vc = colorAt b p == turn b
                        let posMoves   = validMoves b p
 
-                       if' (posMoves /= [] && pieceValid)
+                       if' (posMoves /= [] && not pe && vc)
                            (return (p, posMoves))
-                           (putStrLn "There are no possible moves with that piece, please try another one!" >> inputFirstCoord b)
+                           (printInputError pe vc >> inputFirstCoord b)
 
 inputSecondCoord :: [Coord] -> IO Coord
 inputSecondCoord cs = do p <- inputCoord "Input the space to move it to (eg. d4): "
