@@ -32,16 +32,6 @@ emptyRaycastPiece b v acc | not $ onBoard acc   = Nothing
                           | not $ isEmpty b acc = getTile b acc
                           | otherwise           = emptyRaycastPiece b v (acc + v)
 
-
-isValidPawnDouble :: MovePredicate
-isValidPawnDouble b p1 p2 | y1 == y2           = False
-                          | abs (y2 - y1) > 2  = False
-                          | x1 /= x2           = False
-                          | y1 /= 1 && y1 /= 6 = False
-                          | otherwise          = isEmpty b p2
-                          where (Vector x1 y1) = p1
-                                (Vector x2 y2) = p2
-
 isValidEnPassant :: Board -> Color -> Coord -> Coord -> Bool
 isValidEnPassant b c p1 p2 | not (hasPawnDoubled b op p2) = False
                            | not (isEmpty b p2)           = False
