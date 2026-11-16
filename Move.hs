@@ -72,13 +72,6 @@ validPawnMoves b p = filter (isValidPawnMove b p) [fp, dp, lp, rp]
                          lp               = fp + (Vector (-1) 0)
                          rp               = fp + (Vector 1    0)
 
-
-isValidBishopMove :: MovePredicate
-isValidBishopMove b p1 p2 | (abs dx) /= (abs dy) = False
-                          | otherwise            = emptyRaycast b v (p1 + v) p2
-                          where (Vector dx dy) = p2 - p1
-                                v              = Vector (signum dx) (signum dy)
-
 validBishopMoves :: MoveLister
 validBishopMoves b p = do vx <- [-1, 1]
                           vy <- [-1, 1]
