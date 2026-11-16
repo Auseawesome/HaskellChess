@@ -267,10 +267,12 @@ spaceAttackedStraight b c p = any id checks
                                               return $ attackerPred $ emptyRaycastPiece b v (p + v)
                                   attackerPred :: Tile -> Bool
                                   attackerPred t | t == Nothing = False
+                                                 | tc == c      = False
                                                  | tt == Queen  = True
                                                  | tt == Rook   = True
                                                  | otherwise    = False
-                                                 where tt = tileType t
+                                                 where tt = tileType  t
+                                                       tc = tileColor t
 
 spaceAttackedDiagonally :: Board -> Color -> Coord -> Bool
 spaceAttackedDiagonally b c p = any id checks
@@ -280,10 +282,12 @@ spaceAttackedDiagonally b c p = any id checks
                                                 return $ attackerPred $ emptyRaycastPiece b v (p + v)
                                     attackerPred :: Tile -> Bool
                                     attackerPred t | t == Nothing = False
+                                                   | tc == c      = False
                                                    | tt == Queen  = True
                                                    | tt == Bishop = True
                                                    | otherwise    = False
-                                                   where tt = tileType t
+                                                   where tt = tileType  t
+                                                         tc = tileColor t
 
 isSpaceAttacked :: Board -> Color -> Coord -> Bool
 isSpaceAttacked b c p = spaceAttackedByPawn     b c p
