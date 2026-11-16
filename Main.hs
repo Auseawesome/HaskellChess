@@ -16,9 +16,10 @@ inputCoord msg = do
 inputFirstCoord :: Board -> IO (Coord, [Coord])
 inputFirstCoord b = do p <- inputCoord "Input the position of the piece you want to move (eg. d2): "
                        
-                       let posMoves = validMoves b p
+                       let pieceValid = getTile b p /= Nothing && colorAt b p == turn b
+                       let posMoves   = validMoves b p
 
-                       if' (posMoves /= [])
+                       if' (posMoves /= [] && pieceValid)
                            (return (p, posMoves))
                            (putStrLn "There are no possible moves with that piece, please try another one!" >> inputFirstCoord b)
 
