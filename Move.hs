@@ -63,14 +63,37 @@ isValidPawnMove b p1 p2 | c == White && y2 <= y1 = False                     -- 
                               c              = colorAt b p1
                               isEnPassant    = isValidEnPassant b c p1 p2
 
+getPawnDir :: Color -> Int
+getPawnDir c = if' (c == White) 1 (-1)
+
+validPawnSingle :: MoveLister
+validPawnSingle b p = if' (em) [p'] []
+                    where c  = colorAt b p
+                          dp = Vector 0 (getPawnDir c)
+                          p' = p + dp
+                          em = Nothing == getTile b p'                     
+
+validPawnDouble :: MoveLister
+validPawnDouble b p = if' (em && or) [p'] []
+                    where c  = colorAt b p
+                          dp = Vector 0 (getPawnDir c * 2)
+                          p' = p + dp
+                          em = Nothing == getTile b p'
+                          y  = yPos p
+                          or = y == 1 || y == 6             
+
+validPawnTakes :: MoveLister
+validPawnTakes b p = do dx <- [-1, 1]
+                        let c  = colorAt b p
+                        let dp = Vector dx (getPawnDir c)
+                        let p' = p + dp
+
+                        true <- return (Nothing /= getTile b p' || isValidEnPassant b c p p')
+
+                        return p'
+
 validPawnMoves :: MoveLister
-validPawnMoves b p = filter (isValidPawnMove b p) [fp, dp, lp, rp]
-                   where Just (Piece c _) = getTile b p
-                         fw               = if' (c == White) 1 (-1)
-                         fp               = p  + (Vector 0   fw)
-                         dp               = fp + (Vector 0   fw)
-                         lp               = fp + (Vector (-1) 0)
-                         rp               = fp + (Vector 1    0)
+validPawnMoves b p = validPawnSingle b p ++ validPawnDouble b p ++ validPawnTakes b p
 
 validBishopMoves :: MoveLister
 validBishopMoves b p = do vx <- [-1, 1]
