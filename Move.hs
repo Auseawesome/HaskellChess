@@ -50,19 +50,6 @@ isValidEnPassant b c p1 p2 | not (hasPawnDoubled b op p2) = False
                                  x2 = xPos p2
                                  op = switchColor c
 
-isValidPawnMove :: MovePredicate
-isValidPawnMove b p1 p2 | c == White && y2 <= y1 = False                     -- White pawns can only move up in the y-direction
-                        | c == Black && y2 >= y1 = False                     -- Black pawns can only move down in the y-direction
-                        | abs (y2 - y1) /= 1     = isValidPawnDouble b p1 p2 -- Check double move if not moving 1 tile in y-direction
-                        | x1 == x2               = isEmpty b p2              -- If moving directly forward, the tile must be empty
-                        | abs(x1 - x2) /= 1      = False                     -- If not moving directly forward, only move 1 tile in x-direction
-                        | isEnPassant            = True                      -- Handle en-passant special case
-                        | otherwise              = isOpposing b c p2         -- If going diagonal, piece must be of opposing color
-                        where (Vector x1 y1) = p1
-                              (Vector x2 y2) = p2
-                              c              = colorAt b p1
-                              isEnPassant    = isValidEnPassant b c p1 p2
-
 getPawnDir :: Color -> Int
 getPawnDir c = if' (c == White) 1 (-1)
 
