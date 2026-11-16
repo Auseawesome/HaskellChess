@@ -85,13 +85,6 @@ validBishopMoves b p = do vx <- [-1, 1]
                           let v = Vector vx vy
                           emptyRaycastList b v (p + v)
 
-isValidKnightMove :: MovePredicate
-isValidKnightMove _ p1 p2 | dx == 0                  = False
-                          | dy == 0                  = False
-                          | (abs dx) + (abs dy) == 3 = True
-                          | otherwise                = False
-                          where (Vector dx dy) = p2 - p1
-
 validKnightMoves :: MoveLister
 validKnightMoves b p = do ax <- [1 , 2]
                           mx <- [-1, 1]
