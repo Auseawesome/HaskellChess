@@ -165,12 +165,14 @@ genericMoveValid b c1 p1 p2 | not (onBoard p1) = False -- Can't move from outsid
                             | not (onBoard p2) = False -- Can't move out of the board
                             | p1 == p2         = False -- Can't move to the same tile that you start on
                             | empty            = False -- Can't move an empty tile
+                            | tt == King       = False -- Can't take a King
                             | c1 /= c2         = False -- Can't move a piece of opposing colour
                             | isAlly b c1 p2   = False -- Can't take piece of your own colour
                             | cc               = False -- Can't do a move which causes check
                             | otherwise        = True
                             where tile  = getTile b p1
                                   empty = tile == Nothing
+                                  tt    = tileType tile
                                   c2    = tileColor tile
                                   cc    = moveCausesCheck b c1 p1 p2
 
