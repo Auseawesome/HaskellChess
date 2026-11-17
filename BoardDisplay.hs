@@ -4,6 +4,13 @@ import Piece
 import PieceDisplay
 import Board
 
+-- The padding on either side of a piece on the board
+piecePadding :: Int
+piecePadding = 2
+
+getSpacePadding :: String
+getSpacePadding = replicate piecePadding ' '
+
 intersperse :: a -> [a] -> [a]
 intersperse j (x:xs) = foldl (\a e -> a ++ [j, e]) [x] xs
 
@@ -19,13 +26,13 @@ chunk n xs = s : chunk n e
              where (s,e) = splitAt n xs
 
 dividingLine :: String
-dividingLine = replicate (8*6 + 10) '-'
+dividingLine = replicate (8*(piecePadding*2+3)+2) '-'
 
 bufferLine :: String
-bufferLine = "  |" ++ (intercalate "|" $ replicate 8 "      ")
+bufferLine = "  |" ++ (intercalate "|" $ replicate 8 $ replicate (2+piecePadding*2) ' ')
 
 displayLine :: [Tile] -> String
-displayLine = intercalate "|" . map ((surround "  ") . tileCode)
+displayLine = intercalate "|" . map ((surround getSpacePadding) . tileCode)
 
 numberRows :: Int -> [String] -> [String]
 numberRows _ []     = []
@@ -34,11 +41,11 @@ numberRows i (x:xs) = ((show i)++" |"++x):(numberRows (i+1) xs)
 -- Generates the file headers for the board
 headerLine :: String
 headerLine = h5
-           where h1 = ['a'..'h']           -- Generates header letters for board, ranging from a to h
-                 h2 = map (: "   ")   h1   -- Pads the letters with three spaces afterwards
-                 h3 = map ("  " ++)   h2   -- Adds two extra spaces to the start to fit even width
-                 h4 = intercalate "|" h3   -- Inserts dividing lines between the letters
-                 h5 = "  |" ++        h4   -- Prepends a column for the row numbers
+           where h1 = ['a'..'h']                       -- Generates header letters for board, ranging from a to h
+                 h2 = map (: ' ' : getSpacePadding) h1 -- Pads the letters with three spaces afterwards
+                 h3 = map (getSpacePadding ++)      h2 -- Adds two extra spaces to the start to fit even width
+                 h4 = intercalate "|"               h3 -- Inserts dividing lines between the letters
+                 h5 = "  |" ++                      h4 -- Prepends a column for the row numbers
 
 -- Displays the board as a string
 displayBoard :: Board -> String
