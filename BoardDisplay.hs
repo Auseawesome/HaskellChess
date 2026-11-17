@@ -50,8 +50,7 @@ displayLine :: Board -> [Tile] -> String
 displayLine b = intercalate "|" . map ((surround $ getSpacePadding b) . tileCode)
 
 numberRows :: Int -> [String] -> [String]
-numberRows _ []     = []
-numberRows i (x:xs) = ((show i)++" |"++x):(numberRows (i+1) xs)
+numberRows i = zipWith (++) [(show i)++" |" | i <- [1..]]
 
 -- Generates the file headers for the board
 headerLine :: Board -> String
