@@ -76,7 +76,7 @@ makeConfBoard :: IO Board
 makeConfBoard = do putStrLn "Do you want to use the default board display? (y/n)"
                    useDefault <- yesNoInput
                    
-                   return $ makeBoard (BoardDC 2 1)
+                   return $ makeBoard defaultDC
 
 main :: IO()
 main = do
