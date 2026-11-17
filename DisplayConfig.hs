@@ -1,7 +1,7 @@
 module DisplayConfig(
     BoardDC(BoardDC, piecePadding, bufferLines),
 
-    defaultDC
+    defaultDC, compactDC, slimDC, wideDC
 ) where
 
 data BoardDC = BoardDC {
@@ -9,5 +9,8 @@ data BoardDC = BoardDC {
     bufferLines :: Int
 }
 
-defaultDC :: BoardDC
+defaultDC, compactDC, slimDC, wideDC :: BoardDC
 defaultDC = BoardDC 2 1
+compactDC = BoardDC 1 0
+slimDC    = BoardDC 1 1
+wideDC    = BoardDC 3 1
