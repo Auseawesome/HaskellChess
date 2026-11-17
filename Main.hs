@@ -72,11 +72,54 @@ yesNoInput = do str <- getLine
                               ('N':_)   -> Just False
                               otherwise -> Nothing                  
 
+tryRead :: (Read a) => String -> Maybe a
+tryRead s = case reads s of
+                 [(o, "")] -> Just o
+                 _         -> Nothing
+
+readUntilValid :: Read a => String -> IO a
+readUntilValid m = do putStrLn m
+                      str <- getLine
+                      let maybeOut = tryRead str
+                      case maybeOut of
+                           Just out -> return out
+                           Nothing  -> putStrLn "Please enter a valid input" >> readUntilValid m
+
+customDisConf :: IO BoardDC
+customDisConf = do pad <- readUntilValid "Input the number of spaces of padding around pieces:"
+                   buf <- readUntilValid "Input the number of buffer lines between rows:"
+                   return BoardDC {
+                       piecePadding = pad,
+                       bufferLines  = buf
+                   }
+                   
+
+templateDisConf :: Maybe BoardDC -> IO BoardDC
+templateDisConf Nothing  = putStrLn "That is not a valid option" >> chooseDisConf
+templateDisConf (Just t) = return t
+
+chooseDisConf :: IO BoardDC
+chooseDisConf = do putStrLn "Choose between these board display options: "
+                   putStrLn "(d)efault"
+                   putStrLn "(c)ompact"
+                   putStrLn "(s)lim"
+                   putStrLn "(w)ide"
+                   putStrLn "(C)ustom"
+                   putStrLn ""
+                   str <- getLine
+
+                   case str of
+                        ('C':_) -> customDisConf
+                        ( o :_) -> templateDisConf $ selectDC o
+                        _       -> putStrLn "Please choose an option" >> chooseDisConf
+
 makeConfBoard :: IO Board
 makeConfBoard = do putStrLn "Do you want to use the default board display? (y/n)"
                    useDefault <- yesNoInput
+
+                   selectedDC <- if' useDefault (return defaultDC) chooseDisConf 
                    
-                   return $ makeBoard defaultDC
+                   return $ makeBoard selectedDC
 
 main :: IO()
 main = do
