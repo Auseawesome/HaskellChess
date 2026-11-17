@@ -57,8 +57,29 @@ moveLoop b = do let c = turn b
                         p2       <- inputSecondCoord pm
                         moveLoop $ nextTurn $ makeMove c p1 p2 b
 
+yesNoInput :: IO Bool
+yesNoInput = do str <- getLine
+                let maybeOut = r str
+                let Just out = maybeOut
+                if' (maybeOut == Nothing)
+                    (putStrLn "Please input either y or n" >> yesNoInput)
+                    (return out)
+             where r :: String -> Maybe Bool
+                   r s = case s of
+                              ('y':_)   -> Just True
+                              ('Y':_)   -> Just True
+                              ('n':_)   -> Just False
+                              ('N':_)   -> Just False
+                              otherwise -> Nothing                  
+
+makeConfBoard :: IO Board
+makeConfBoard = do putStrLn "Do you want to use the default board display? (y/n)"
+                   useDefault <- yesNoInput
+                   
+                   return $ makeBoard (BoardDC 2 1)
+
 main :: IO()
 main = do
-    let board = makeBoard (BoardDC 2 1)
+    board <- makeConfBoard
     moveLoop board
 
