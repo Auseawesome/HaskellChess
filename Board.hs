@@ -1,5 +1,5 @@
 module Board(
-  Board(grid, turn),
+  Board(grid, turn, disConf),
   Coord,
 
   makeCoords, makeBoard,
@@ -21,13 +21,15 @@ module Board(
 ) where
 import Piece
 import Vector
+import DisplayConfig
 
 data Board = Board {
   grid        :: [Tile],
   turn        :: Color,
   kingMoved   :: (Bool, Bool),
   rookMoved   :: ((Bool, Bool), (Bool, Bool)),
-  pawnDoubled :: (Maybe Int, Maybe Int)
+  pawnDoubled :: (Maybe Int, Maybe Int),
+  disConf     :: BoardDC
 }
 
 ------------------------
@@ -57,7 +59,7 @@ defaultPiece p = case y of
 makeCoords :: [Coord]
 makeCoords = [Vector x y |  y <- [0..7], x <- [0..7]]
 
-makeBoard :: Board
+makeBoard :: BoardDC -> Board
 makeBoard = Board grid White (False, False) ((False, False), (False, False)) (Nothing, Nothing)
             where grid     = map defaultPiece makeCoords
 

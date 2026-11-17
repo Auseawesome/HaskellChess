@@ -1,6 +1,7 @@
 module Main(main) where
 import ChessUtils
 import Board
+import DisplayConfig
 import BoardDisplay -- BoardDisplay contains Show instance for Board
 import Move
 import Error
@@ -58,6 +59,6 @@ moveLoop b = do let c = turn b
 
 main :: IO()
 main = do
-    let board = makeBoard
+    let board = makeBoard (BoardDC 2 1)
     moveLoop board
 
