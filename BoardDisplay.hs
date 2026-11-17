@@ -5,11 +5,19 @@ import PieceDisplay
 import Board
 import DisplayConfig
 
+----------------------------
+-- Display Config Helpers --
+----------------------------
+
 padForBoard :: Board -> Int
 padForBoard b = piecePadding $ disConf b
 
 getSpacePadding :: Board -> String
 getSpacePadding b = replicate (padForBoard b) ' '
+
+-------------------------------
+-- List Manipulation Helpers --
+-------------------------------
 
 intersperse :: a -> [a] -> [a]
 intersperse j (x:xs) = foldl (\a e -> a ++ [j, e]) [x] xs
@@ -27,6 +35,10 @@ chunk :: Int -> [a] -> [[a]]
 chunk _ [] = []
 chunk n xs = s : chunk n e
              where (s,e) = splitAt n xs
+
+------------------------------
+-- Board Display Components --
+------------------------------
 
 dividingLine :: Board -> String
 dividingLine b = replicate (8*((padForBoard b)*2+3)+2) '-'
@@ -49,6 +61,10 @@ headerLine b = h5
                    h3 = map (getSpacePadding b ++)      h2 -- Adds two extra spaces to the start to fit even width
                    h4 = intercalate "|"                 h3 -- Inserts dividing lines between the letters
                    h5 = "  |" ++                        h4 -- Prepends a column for the row numbers
+
+------------------------------
+-- Full Board Display Logic --
+------------------------------
 
 -- Displays the board as a string
 displayBoard :: Board -> String
